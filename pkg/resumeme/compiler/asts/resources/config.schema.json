@@ -245,6 +245,12 @@
           "default": "auto",
           "description": "Auto generates a personal README on GitHub forks; project preserves it; resume always generates."
         },
+        "convergence_plot": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9_./-]+\\.svg$",
+          "default": "docs/assets/capture-convergence.svg",
+          "description": "Tag-generated Matplotlib SVG and adjacent JSON history; null disables publication."
+        },
         "introduction": {
           "type": ["string", "null"],
           "pattern": "\\S",

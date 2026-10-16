@@ -36,7 +36,7 @@ cp -- "$artifact_dir/resume.pdf" resume.pdf
 git rm --ignore-unmatch -- "${artifacts[@]:1}"
 git add -- resume.pdf "${release_paths[@]}"
 
-# Preserve exactly the generated files staged by this verified tag, including its fresh profile and media.
+# Preserve exactly the generated files staged by this verified tag, without replacing newer main capture inputs.
 staged_tree="$(git write-tree)"
 mapfile -d '' -t generated_paths < <(git diff --cached --name-only -z)
 
@@ -104,9 +104,7 @@ for attempt in 1 2 3; do
     commit_message+=$'\nResumeme-Source-SHA: '
     commit_message+="$SOURCE_SHA"
 
-    if [[ "${RESUME_PUBLISH_USES_TOKEN:-false}" == true ]]; then
-        commit_message+=$'\nResumeme-Publication: true'
-    fi
+    commit_message+=$'\nResumeme-Publication: true'
 
     git commit -m "$commit_message"
 

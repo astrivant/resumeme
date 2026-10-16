@@ -135,16 +135,16 @@ def test_capture_restore_rejects_incomplete_or_unrelated_inputs(tmp_path: Path, 
     [
         ("schedule", "refs/heads/main", True, True),
         ("workflow_dispatch", "refs/heads/main", True, True),
-        ("push", "refs/tags/v0.2.0", False, True),
-        ("push", "refs/tags/resume-test", False, True),
-        ("push", "refs/tags/resume-test", True, True),
+        ("push", "refs/tags/v0.2.0", False, False),
+        ("push", "refs/tags/resume-test", False, False),
+        ("push", "refs/tags/resume-test", True, None),
         ("pull_request", "refs/heads/main", True, None),
         ("pull_request", "refs/tags/resume-test", True, None),
-        ("push", "refs/heads/main", True, None),
+        ("push", "refs/heads/main", True, True),
         ("workflow_dispatch", "refs/heads/feature", True, None),
         ("workflow_dispatch", "refs/tags/resume-test", True, None),
         ("schedule", "refs/heads/feature", True, None),
-        ("push", "refs/heads/main", False, False),
+        ("push", "refs/heads/main", False, True),
         ("push", "refs/heads/feature", False, False),
         ("pull_request", "refs/pull/123/merge", False, False),
         ("workflow_dispatch", "refs/heads/main", False, False),
@@ -152,7 +152,7 @@ def test_capture_restore_rejects_incomplete_or_unrelated_inputs(tmp_path: Path, 
 )
 def test_refresh_event_selection(tmp_path: Path, event: str, ref: str, requested: bool, expected: bool | None) -> None:
     """
-    Capture on every tag push while retaining explicit refresh boundaries for branch events.
+    Capture only main source events and keep tags on accepted committed inputs.
 
     Args:
         tmp_path (Path): GitHub output-file directory.
@@ -162,7 +162,7 @@ def test_refresh_event_selection(tmp_path: Path, event: str, ref: str, requested
         expected (bool | None): Capture decision, or None when this context must fail before exposing credentials.
 
     Returns:
-        None: Tags refresh without an opt-in; ordinary builds reuse saved inputs and invalid refresh requests fail.
+        None: Main pushes refresh without an opt-in; tags reuse saved inputs and invalid refresh requests fail.
     """
     output = tmp_path / "output"
     result = subprocess.run(
@@ -203,7 +203,8 @@ def test_tag_pipeline_propagates_capture_and_signs_the_current_build() -> None:
     assert source["outputs"]["refresh"] == "${{ steps.source.outputs.refresh }}"
     bootstrap = pipeline["jobs"]["capture-bootstrap"]
     assert "needs.source.outputs.refresh == 'true'" in bootstrap["if"]
-    assert "github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')" in bootstrap["if"]
+    assert "github.ref == 'refs/heads/main'" in bootstrap["if"]
+    assert "refs/tags/" not in bootstrap["if"]
     capture = next(step for step in bootstrap["steps"] if step.get("uses") == "./.github/actions/linkedin-session")
     assert capture["with"]["command"] == "capture-plan"
     aggregate = pipeline["jobs"]["capture"]
@@ -235,7 +236,7 @@ def test_tag_pipeline_propagates_capture_and_signs_the_current_build() -> None:
             assert "continue-on-error" not in restore
             assert steps.index(restore) < next(index for index, step in enumerate(steps) if "run" in step)
 
-    # Enabled summaries must be regenerated from tag captures instead of disappearing from freshly built release PDFs.
+    # Enabled summaries must be generated from committed tag evidence instead of disappearing from freshly built release PDFs.
     preparation = next(step for step in stages["summary"]["jobs"]["prepare"]["steps"] if step.get("id") == "prepare")
     assert " ".join(preparation["env"]["GENERATE_SUMMARY"].split()) == (
         "${{ (github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || "
@@ -420,7 +421,8 @@ def test_independent_pipeline_work_has_no_profile_or_summary_barrier() -> None:
     """
     workflows = REPOSITORY_ROOT / ".github/workflows"
     jobs = yaml.safe_load((workflows / "ci.yml").read_text())["jobs"]
-    assert jobs["summary-stage"]["needs"] == jobs["skills-stage"]["needs"] == ["source", "capture"]
+    assert jobs["summary-stage"]["needs"] == ["source", "capture"]
+    assert jobs["skills-stage"]["needs"] == "source"
     assert jobs["documents-stage"]["needs"] == jobs["resume-stage"]["needs"] == ["source", "summary-stage", "awareness"]
     assert jobs["container-stage"]["needs"] == jobs["release-stage"]["needs"] == jobs["pypi-stage"]["needs"] == ["source", "verified"]
     assert jobs["container-notes-stage"]["needs"] == ["source", "container-stage", "release-stage"]

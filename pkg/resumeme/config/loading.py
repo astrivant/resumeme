@@ -431,6 +431,10 @@ def _parse_config(raw: object, path: Path, *, validate_companies: bool) -> Confi
 
     # Inputs, templates, and outputs share one root but must never resolve to the same file or directory.
     paths = [config.output.profile, config.output.assets, config.output.tex, config.output.pdf, config.readme.output]
+    if config.readme.convergence_plot is not None:
+        if ".git" in Path(config.readme.convergence_plot).parts:
+            raise ConfigurationError("publishing.readme.convergence_plot must not write inside Git metadata.")
+        paths.extend([config.readme.convergence_plot, str(Path(config.readme.convergence_plot).with_suffix(".json"))])
     paths.extend(f"single-origin/{key}/resume.pdf" for key in company_keys)
 
     if config.template:

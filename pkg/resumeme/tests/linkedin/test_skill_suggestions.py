@@ -510,7 +510,7 @@ def test_ci_contract_is_tag_only_and_keeps_model_and_linkedin_credentials_separa
     publish_caller = jobs["skills-publish-stage"]
     workflow = yaml.safe_load((root / ".github/workflows/stage-skills.yml").read_text())["jobs"]
     publisher = yaml.safe_load((root / ".github/workflows/stage-skills-publish.yml").read_text())["jobs"]["publish"]
-    assert caller["needs"] == ["source", "capture"]
+    assert caller["needs"] == "source"
     assert publish_caller["needs"] == ["source", "skills-stage", "release-stage"]
     assert "needs.skills-stage.result == 'success'" in publish_caller["if"]
     assert "needs.release-stage.result == 'success'" in publish_caller["if"]

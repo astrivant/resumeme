@@ -54,6 +54,15 @@ jobs:
         with:
           name: resume-pdf
           path: .cache/publication/
+      - name: Resolve convergence publication preference
+        id: convergence
+        if: inputs.refresh
+        run: poetry run python scripts/ci/publication/convergence.py enabled >>"$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: inputs.refresh && steps.convergence.outputs.enabled == 'true'
+        with:
+          name: capture-convergence
+          path: .cache/convergence/
       - name: Publish only if main has not advanced
         id: publish
         env:

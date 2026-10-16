@@ -156,11 +156,10 @@ jobs:
       actions: read
     if: >-
       needs.source.outputs.refresh == 'true'
-      && ((github.event_name == 'push'
-      && startsWith(github.ref, 'refs/tags/'))
-      || (github.ref == 'refs/heads/main'
-      && (github.event_name == 'schedule'
-      || github.event_name == 'workflow_dispatch')))
+      && github.ref == 'refs/heads/main'
+      && (github.event_name == 'push'
+      || github.event_name == 'schedule'
+      || github.event_name == 'workflow_dispatch')
     runs-on: ${{ fromJSON(vars.RESUMEME_LINKEDIN_RUNNER || '["ubuntu-24.04"]') }}
     timeout-minutes: 45
     outputs:
@@ -175,7 +174,7 @@ jobs:
         with:
           groups: main
 
-      # History-based adaptive scheduling learns from the latest complete capture, including sibling release tags.
+      # Adaptive scheduling learns from the latest complete main capture.
       - name: Restore encrypted traversal timings
         env:
           GH_TOKEN: ${{ github.token }}
@@ -304,6 +303,24 @@ jobs:
           poetry run resumeme --config resumeme.config.yaml validate
       - name: Export complete capture for downstream stages
         run: poetry run python scripts/ci/linkedin/profile-artifact.py export
+      # Project only aggregate evidence; profile fields and per-route timings stay out of the public plot artifact.
+      - name: Collect main convergence measurements
+        id: convergence
+        env:
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+          CAPTURE_RUNNER: ${{ vars.RESUMEME_LINKEDIN_RUNNER || '["ubuntu-24.04"]' }}
+        run: |
+          poetry run python scripts/ci/publication/convergence.py enabled >>"$GITHUB_OUTPUT"
+          poetry run python scripts/ci/publication/convergence.py collect
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.convergence.outputs.enabled == 'true'
+        with:
+          name: capture-convergence
+          path: .cache/convergence/current.json
+          include-hidden-files: true
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 14
       # Publish feedback only after complete aggregation and validation; failed workers never train the next run.
       - name: Encrypt traversal timings for the next run
         id: timings
@@ -534,7 +551,7 @@ jobs:
     name: Publish PDF
     needs: [source, verified]
     # Token-authenticated publication commits run normal CI, but their parent run already published these outputs.
-    # Gate only republishing on a main push; tagging that generated commit must still capture and release normally.
+    # Gate only republishing on a main push; tagging that generated commit must still build and release normally.
     if: >-
       !cancelled()
       && needs.source.result == 'success'
@@ -589,7 +606,7 @@ jobs:
     with:
       sha: ${{ github.sha }}
 
-  # A verified tag also places its signed PDF and fresh capture on main after release publication.
+  # A verified tag also places its signed PDF on main without recapturing data after release publication.
   tag-publish-stage:
     name: Commit signed PDF to main
     needs: [source, release-stage]
@@ -627,12 +644,15 @@ jobs:
     with:
       sha: ${{ needs.tag-publish-stage.outputs.published-sha }}
 
-  # Tags capture LinkedIn first and release the PDF built from that capture; branch and monthly runs create no release.
+  # Tags release a new PDF from the accepted main snapshot; branch and monthly runs create no release.
   release-stage:
     name: Release signed PDF
     needs: [source, verified]
     if: >-
-      github.event_name == 'push'
+      !cancelled()
+      && needs.source.result == 'success'
+      && needs.verified.result == 'success'
+      && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/stage-release.yml
     permissions:
@@ -648,7 +668,10 @@ jobs:
     name: Publish signing identity to LinkedIn
     needs: [source, release-stage]
     if: >-
-      github.event_name == 'push'
+      !cancelled()
+      && needs.source.result == 'success'
+      && needs.release-stage.result == 'success'
+      && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/stage-ownership.yml
     with:
@@ -665,7 +688,10 @@ jobs:
     name: Optionally upload the released resume to LinkedIn
     needs: [source, release-stage]
     if: >-
-      github.event_name == 'push'
+      !cancelled()
+      && needs.source.result == 'success'
+      && needs.release-stage.result == 'success'
+      && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/stage-linkedin-resume.yml
     with:
@@ -680,11 +706,10 @@ jobs:
   # Tagged skill evidence is independent of summaries, builds, and signing; only live additions wait for release.
   skills-stage:
     name: Propose LinkedIn skills
-    needs: [source, capture]
+    needs: source
     if: >-
       !cancelled()
       && needs.source.result == 'success'
-      && needs.capture.result == 'success'
       && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/stage-skills.yml
@@ -721,7 +746,10 @@ jobs:
     name: Publish Python package
     needs: [source, verified]
     if: >-
-      github.event_name == 'push'
+      !cancelled()
+      && needs.source.result == 'success'
+      && needs.verified.result == 'success'
+      && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/stage-pypi.yml
     with:
@@ -734,7 +762,10 @@ jobs:
     name: Publish container
     needs: [source, verified]
     if: >-
-      github.event_name == 'push'
+      !cancelled()
+      && needs.source.result == 'success'
+      && needs.verified.result == 'success'
+      && github.event_name == 'push'
       && startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/stage-container.yml
     permissions:
@@ -763,3 +794,19 @@ jobs:
       image-tags: |
         ${{ needs.container-stage.outputs.ghcr-tags }}
         ${{ needs.container-stage.outputs.dockerhub-tags }}
+
+  # A green source gate is insufficient: this audit must fail when a required publisher was skipped.
+  release-check-stage:
+    name: Verify release delivery
+    needs: [source, verified, release-stage, pypi-stage, container-stage, tag-publish-stage, tag-pages-stage]
+    if: >-
+      always()
+      && github.event_name == 'push'
+      && startsWith(github.ref, 'refs/tags/')
+    uses: ./.github/workflows/stage-release-check.yml
+    permissions:
+      contents: read
+      actions: read
+    with:
+      sha: ${{ needs.source.outputs.sha || github.sha }}
+      results: ${{ toJSON(needs) }}

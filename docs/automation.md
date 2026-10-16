@@ -1,27 +1,35 @@
-# Monthly refresh and signed releases
+# Main capture and signed releases
 
-The pipeline refreshes LinkedIn on the first day of every month at **06:17 UTC**
-(`17 6 1 * *`). It authenticates with the configured browser, captures the profile
-overview and route plan, and collects assigned sections using a bounded parallel worker matrix.
-The aggregator verifies complete section ownership before images and project
-previews are downloaded, validation and PDF generation run, and the complete
-snapshot, referenced assets, and PDF are committed to `main` together. The
-configured profile path is replaced in place; resumeme does not create dated
-profile archives. Ordinary branch pushes rebuild the saved inputs. Neither path
-creates a release.
+Every source push to `main` captures LinkedIn, as do the monthly schedule
+(first day at **06:17 UTC**) and a manual main run with `refresh=true`.
+PRs merge with squash so each reviewed change has one source commit. Generated
+publication commits carry a marker that prevents recursive capture and publication;
+their source checks still run. Feature branches and PRs use committed inputs.
 
-Every tag push also performs a headless LinkedIn capture before validation and
-compilation. Capture authenticates once with the configured browser, saves an
-encrypted browser session, and builds a weighted plan of profile sections. Six
-parallel workers restore independent copies of that browser-specific session and
-collect assigned sections without login credentials or shared-cache writes. The
-aggregator rejects missing, duplicate, misrouted, or cross-browser shard results
-before accepting a complete snapshot. The release signs the fresh PDF built in
-that same workflow run, not the PDF committed at the tag. After release
-verification, the publication stage restores that run's fresh capture artifact,
-then commits its snapshot, referenced media, and signed PDF to the latest `main`
-tree. It preserves newer source files and replaces only generated publication
-outputs. Pages deploys the accepted commit, including the signed PDF.
+Capture authenticates once, freezes a plan, and collects assigned sections through
+a bounded worker matrix. Fan-in rejects missing, duplicate, misrouted or incomplete
+results. After the required checks pass, main publication commits the profile,
+referenced media, capture receipt, convergence plot and PDF together. A failed or
+superseded run cannot replace the accepted snapshot.
+
+A tag builds a new PDF from that committed capture. It does not collect LinkedIn
+data. Before publication, the build verifies the adjacent `*.capture.json` receipt:
+repository, main source and run, exact profile/media hashes, committed bytes, and
+acceptance ancestry on main. Tag the accepted publication commit after its main
+pipeline succeeds. A missing receipt or modified input fails with instructions to
+complete a new main capture; there is no stale-data fallback.
+
+The receipt is CI provenance in trusted Git history, not an independent signature
+or a claim that profile facts are true. It covers captured profile/media inputs;
+optional summaries are generated from those inputs by the configured build.
+
+Tag publication signs the PDF built in that run, publishes its verification files,
+and places the signed PDF on main before updating Pages. It preserves newer source
+and captured data. Explicit publisher conditions allow intentionally skipped optional
+ancestors while requiring successful verification. The terminal **Verify release
+delivery** job rejects missing required publishers, downloads the public release,
+and verifies its source, key and signed artifacts against this run's signing output.
+A successful CI verification job alone does not mean a release exists.
 
 Enable `publishing.pages.enabled` to also update a [GitHub Pages website](pages.md) after
 that commit is accepted. The optional stage serves `index.html` and the same PDF
@@ -99,11 +107,13 @@ meaningful predicted time. `capture.sharding` can resize the matrix after a
 completed-run cooldown when predicted time/cost savings justify it. The
 [convergence study](../studies/capture-convergence/README.md) compares this policy
 with fixed limits, an outer PID supervisor, and online gradient descent.
+The [live README plot](capture-scheduling.md#live-convergence-plot) separately
+tracks real aggregate measurements on main, using Matplotlib and fork-local output paths.
 Persistent bottlenecks can be refined from sections to independently selectable
 detail tabs, one additional section per run.
 
 See [capture scheduling](capture-scheduling.md) for the objective, controller
-constants, cold-start behavior, progressive unit catalog, and cross-tag feedback
+constants, cold-start behavior, progressive unit catalog, and cross-run feedback
 storage. Fan-in still requires all planned worker outputs and complete unit coverage
 before replacing the accepted profile.
 
@@ -114,8 +124,8 @@ flowchart TD
     source --> tests[Python shards and lint/type/schema checks]
     source --> readme[README review]
     source --> browsers[Browser E2E]
-    source --> refresh{Refresh requested?}
-    refresh -->|No| stored[Committed profile for ordinary builds]
+    source --> refresh{Main capture event?}
+    refresh -->|No| stored[Committed profile and receipt]
     refresh -->|Yes| bootstrap[Refresh bootstrap]
     history[Previous accepted capture timings] -. decrypt compatible feedback .-> bootstrap
     bootstrap --> plan[Overview and weighted section plan]
@@ -138,12 +148,15 @@ flowchart TD
     browsers --> gate
     pdf --> gate
     review --> gate
-    gate --> release[Signed tag release]
+    gate --> release[Signed tag release from accepted main data]
     gate --> registries[Tag registry uploads]
     gate --> pypi[Tag PyPI publication]
-    gate --> main[Main PDF commit and Pages]
+    gate --> main[Main snapshot, receipt, plot and PDF]
     release --> notes[Container release notes]
     registries --> notes
+    release --> delivery[Verify published tag delivery]
+    pypi --> delivery
+    registries --> delivery
     release --> publishskills[Optional LinkedIn skill additions]
     skills --> publishskills
 ```
@@ -203,7 +216,7 @@ gh secret set LINKEDIN_PASSWORD
   and URLs use manual sign-in during interactive capture. No additional login
   variable is needed. Headless use of a public identifier fails before opening a browser.
 - `LINKEDIN_PASSWORD`: account password, passed only to capture or explicitly enabled
-  ownership/skill updates or saved resume uploads. A login identifier and password are required for tag, monthly, and
+  ownership/skill updates or saved resume uploads. A login identifier and password are required for main source pushes, monthly runs, and
   requested manual captures.
 - `OPENAI_API_KEY`: needed if `automation.codex.enabled` or `automation.codex.skills.enabled` is true.
   Create it on the [OpenAI API keys page](https://platform.openai.com/api-keys) and save it as an Actions secret.
@@ -440,31 +453,33 @@ For a resume upload, use the verified signed release PDF. See [CLI commands](CLI
 
 ## Choose a version to share
 
-Commit and push the configuration you want to use, then tag that revision. Its
-pipeline captures your current LinkedIn profile and builds a new PDF. Use a résumé tag
-such as `resume-2026-10` to avoid triggering the separate `v<version>` PyPI release:
+Merge the intended configuration/code change with squash, then wait for main's
+capture and publication to succeed. Pull the accepted publication commit before
+tagging. Use a resume tag such as `resume-2026-10` for a personal PDF release;
+`v<version>` also publishes the Python package:
 
 ```bash
 git switch main
 git pull --ff-only
-git tag resume-2026-10
+# Confirm the main pipeline and its accepted capture publication succeeded.
+git tag -s resume-2026-10 -m 'Publish accepted resume snapshot'
 git push origin resume-2026-10
 ```
 
-The source stage exports one complete `resumeme-profile` capture for this run.
-Validation, enabled summaries, compilation, and optional skill proposals use that
-same capture. After verification, the release job downloads **this run's
-`resume-pdf` artifact** and adds a light-gray footer on its last page with the exact
-release link and signing key fingerprint. It preserves the freshly compiled body
-and generated summaries, then signs the PDF including that footer. It releases
-the PDF, Cosign signature bundles, public key, SHA-256 manifest, key fingerprint,
-and source revision. After release publication, a tag stage commits those same
-verified files and the matching captured profile and media to `main`, but only
-when `main` still points at the tagged source and the tag is still the latest
-release. The commit also refreshes the configured README preview or project
-branding. The Pages stage then publishes that accepted commit. The container
-stage appends its pull instructions to the same release. See
+Tags verify the committed capture receipt and build from its profile and media.
+Enabled summaries and skill proposals use that same saved evidence. After the
+common verification gate, the release job signs **this run's `resume-pdf` artifact**,
+including the release link and key fingerprint in its footer. It publishes the PDF,
+signature bundles, public key, SHA-256 manifest, key fingerprint and source revision.
+The tag publication job puts the signed files on main and updates its README preview;
+Pages then deploys that accepted commit when enabled. No tag job overwrites main's
+profile with a new capture. Container pull instructions are added to the same
+release. The terminal audit must pass before delivery is complete. See
 [signature verification](README.md#signed-releases).
+
+An existing tag retains its original workflow. A retry cannot pick up a workflow
+fix from main. Merge the fix and create a new tag from an accepted main publication;
+do not move an already published tag.
 
 When `automation.codex.skills.enabled` is true, a separate stage generates an evidence-backed
 `resumeme-skills` artifact. Set `automation.codex.skills.publish: true` to add missing skills

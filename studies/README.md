@@ -5,8 +5,6 @@ Each study keeps its scope, evidence, assumptions, and evaluation protocol in
 its own directory. Status distinguishes proposals from measured results.
 
 <!-- toc:start -->
-**Table of contents**
-
 - [Study inventory](#study-inventory)
 - [Evidence and publication](#evidence-and-publication)
 <!-- toc:end -->

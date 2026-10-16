@@ -145,11 +145,13 @@ class Readme:
         mode (Literal["auto", "project", "resume"]): Auto generates on forks, project preserves the README, resume always generates.
         introduction (str | None): Optional plain-text introduction; None uses the shared resume introduction.
         output (str): Repository-relative Markdown destination, separate from the project README when overridden.
+        convergence_plot (str | None): Tag-generated Matplotlib SVG destination; None disables aggregate publication.
     """
 
     mode: Literal["auto", "project", "resume"] = "auto"
     introduction: str | None = None
     output: str = "README.md"
+    convergence_plot: str | None = "docs/assets/capture-convergence.svg"
 
 
 @frozen

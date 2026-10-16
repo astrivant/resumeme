@@ -1,6 +1,6 @@
 # Suggested LinkedIn skills
 
-On a tag push, Codex can propose profile skills from the same fresh LinkedIn capture
+On a tag push, Codex can propose profile skills from the accepted main capture committed at that tag
 used to build the released PDF.
 An optional `resumeme publish-skills` command adds missing suggestions to the live
 profile after release publication. Existing skills and their endorsements are
@@ -25,7 +25,7 @@ automation:
       context: Prioritize platform engineering, infrastructure, and developer tooling.
 ```
 
-- `enabled`: generate a proposal after the tag's profile capture. The package default
+- `enabled`: generate a proposal from the capture committed at the tag. The package default
   is `false`. Set it to `false` to skip generation and its API usage.
 - `publish`: opt in to live LinkedIn additions after generation and validation.
   Defaults to `false`; this stops LinkedIn writes but does not stop generation.

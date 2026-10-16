@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-# Bind every reusable pipeline stage to the checked-out source commit.
+# Bind pipeline consumers to one source; collect only from authorized main events.
 set -euo pipefail
 refresh="${REFRESH_PROFILE:-false}"
 
-# Every tag captures live profile changes before building, even when no manual refresh flag was supplied.
-if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" == refs/tags/* ]]; then
+# Main source pushes collect once; generated publication commits cannot recursively collect.
+if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF" = refs/heads/main ]; then
     refresh=true
-
-# Branch captures remain restricted to scheduled or explicitly requested refreshes of main.
-elif [[ "$refresh" == true && ("$GITHUB_REF" != refs/heads/main || ! "$GITHUB_EVENT_NAME" =~ ^(schedule|workflow_dispatch)$) ]]; then
-    echo 'Profile refresh requires a tag push, or main with a scheduled or requested manual refresh.' >&2
-    exit 1
+    author="$(git show -s --format=%an HEAD)"
+    marker="$(git show -s --format='%(trailers:key=Resumeme-Publication,valueonly)' HEAD)"
+    if [ "$author" = 'github-actions[bot]' ] && [ "$marker" = true ]; then
+        refresh=false
+    fi
+elif [ "$refresh" = true ]; then
+    if [ "$GITHUB_REF" != refs/heads/main ] || [[ ! "$GITHUB_EVENT_NAME" =~ ^(schedule|workflow_dispatch)$ ]]; then
+        echo 'Profile refresh requires a main push, or a scheduled or requested manual run on main. Tags reuse accepted data.' >&2
+        exit 1
+    fi
 fi
 
 echo "sha=$(git rev-parse HEAD)" >>"$GITHUB_OUTPUT"

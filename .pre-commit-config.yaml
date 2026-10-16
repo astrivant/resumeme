@@ -11,6 +11,12 @@ repos:
         files: '^(pkg/resumeme/linkedin/scripts/.*\.js|scripts/validation/math/.*\.mjs)$'
   - repo: local
     hooks:
+      - id: documentation-contents
+        name: README table of contents
+        entry: bash scripts/tooling/project-python.sh scripts/documentation/contents.py --check
+        language: system
+        pass_filenames: false
+        always_run: true
       # Run the published hook command against the latest checkout, using the project's existing locked environment.
       - id: resumeme-config-validator
         name: Validate resumeme configurations

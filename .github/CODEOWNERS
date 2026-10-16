@@ -2,3 +2,47 @@
 /.github/CODEOWNERS @emmeowzing
 /docs/awareness.md @emmeowzing
 /pkg/resumeme/awareness/models.py @emmeowzing
+
+# Capture evidence, figure generation and its publication contract.
+/.config/resumeme.config.ref.yaml @emmeowzing
+/.github/workflows/ci.yml @emmeowzing
+/.github/workflows/stage-tag-publish.yml @emmeowzing
+/README.md @emmeowzing
+/docs/assets/capture-convergence.* @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/docs/automation.md @emmeowzing
+/docs/capture-scheduling.md @emmeowzing
+/docs/data-handling.md @emmeowzing
+/pkg/resumeme/compiler/asts/resources/config.schema.json @emmeowzing
+/pkg/resumeme/config/ @emmeowzing
+/pkg/resumeme/github/convergence.py @emmeowzing
+/pkg/resumeme/github/readme.py @emmeowzing
+/pkg/resumeme/visualization/convergence.py @emmeowzing
+/poetry.lock @emmeowzing
+/pyproject.toml @emmeowzing
+/scripts/ci/publication/convergence.py @emmeowzing
+/scripts/documentation/ @emmeowzing
+/tests/convergence/ @emmeowzing
+
+# Accepted main captures and complete release delivery.
+/.github/settings.yml @emmeowzing
+/.github/workflows/stage-build.yml @emmeowzing
+/.github/workflows/stage-deploy.yml @emmeowzing
+/.github/workflows/stage-release-check.yml @emmeowzing
+/SKILL.md @emmeowzing
+/docs/README.md @emmeowzing
+/docs/development.md @emmeowzing
+/docs/linkedin-session-cache.md @emmeowzing
+/docs/skills.md @emmeowzing
+/pkg/resumeme/tests/delivery/test_publication.py @emmeowzing
+/pkg/resumeme/tests/linkedin/test_refresh.py @emmeowzing
+/pkg/resumeme/tests/linkedin/test_resume_publish.py @emmeowzing
+/pkg/resumeme/tests/linkedin/test_skill_suggestions.py @emmeowzing
+/scripts/ci/linkedin/profile-artifact.py @emmeowzing
+/scripts/ci/pipeline/source.sh @emmeowzing
+/scripts/ci/publication/publish.sh @emmeowzing
+/scripts/release/check-delivery.sh @emmeowzing
+/scripts/release/check-published.sh @emmeowzing
+/scripts/release/commit-main.sh @emmeowzing
+/scripts/release/publish.sh @emmeowzing
+/tests/__init__.py @emmeowzing

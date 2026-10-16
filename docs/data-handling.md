@@ -221,14 +221,15 @@ repository's own retention setting, not the artifact-specific values.
 
 | Artifact | When and why | Content | Requested days |
 | --- | --- | --- | --- |
-| `resumeme-capture-plan` | Refreshed tag or main capture; coordinate the planned worker matrix | Overview profile content, LinkedIn section route URLs, worker count, and optional frozen placement. No browser state or login credentials. | 1 |
-| `resumeme-capture-shard-*` | Refreshed tag or main capture; one artifact from each worker | Collected LinkedIn profile sections or tab units assigned to that shard, traversal durations, and total worker time. No browser state or login credentials. | 1 |
+| `resumeme-capture-plan` | Main capture; coordinate the planned worker matrix | Overview profile content, LinkedIn section route URLs, worker count, and optional frozen placement. No browser state or login credentials. | 1 |
+| `resumeme-capture-shard-*` | Main capture; one artifact from each worker | Collected LinkedIn profile sections or tab units assigned to that shard, traversal durations, and total worker time. No browser state or login credentials. | 1 |
 | `resumeme-capture-timings-v1-*` | Complete, validated capture | Encrypted profile identifier, unit IDs, traversal durations, previous assignments, bounded PID state, worker count, resize cooldown age, and median browser overhead. Uses the dedicated cache keys; no prose, URLs, or browser credentials. Only the latest matching artifact is consumed. | 90 |
-| `resumeme-profile` | Tag, monthly, or requested main refresh; share one capture with downstream jobs | Full accepted snapshot and every referenced downloaded image, including fields hidden in the PDF. No browser-profile directory. | 1 |
+| `capture-convergence` | Complete main capture, when enabled | Aggregate errors, dispersion, traversal peak, counts and source/run identifiers; no route names, profile text or credentials. Its Matplotlib SVG and bounded JSON history are committed on main with the accepted capture publication. Git retains earlier published versions. | 14 |
+| `resumeme-profile` | Main source push, monthly, or requested main refresh; share one capture with downstream jobs | Full accepted snapshot and every referenced downloaded image, including fields hidden in the PDF. No browser-profile directory. | 1 |
 | `resumeme-summary-inputs` | Enabled summary generation on main or tags; feed the matrix | `.cache/codex/` prompts, schemas, and company/job evidence, including configured writing context. | 7 |
 | `resumeme-summary-result-*` | Each successful matrix item | Validated generated JSON and employer evidence for that item. | 7 |
 | `resumeme-summary` | Collect matrix results for document review and PDF builds | Combined validated summary JSON and employer snapshots, not the input prompts. | 14 |
-| `resumeme-skills` | Enabled skill generation after tag capture, alongside summaries and tests | Proposed skill names, supporting profile quotes, owner/tag identifiers, and source digest. | 30 |
+| `resumeme-skills` | Enabled skill generation from committed tag evidence, alongside summaries and tests | Proposed skill names, supporting profile quotes, owner/tag identifiers, and source digest. | 30 |
 | `resume-pdf` | Successful build, including ordinary branch/PR builds using saved inputs | Generic PDF, generated employer PDFs/manifest, brew date, and enabled README/preview publication files. | 14 |
 | `resumeme-source` | Successful PDF build | Entire `tex/` directory, including generated text, images, and contribution data when used. | 14 |
 | `signed-resume` | Successful tag signing | Publication directory plus generic PDF signatures, public key, fingerprint, checksums, and provenance. | 14 |
@@ -427,7 +428,7 @@ policy. LinkedIn independently chooses the device label and notification text.
 ## Disable, delete, or respond to exposure
 
 1. Stop relevant workflows and active runs before changing credentials or
-   cleaning storage. Otherwise a scheduled capture, tag, or retry can recreate
+   cleaning storage. Otherwise a main capture or retry can recreate
    data. Changes on `main` do not alter the code/configuration of an existing tag.
 2. To stop session caching, remove all three `RESUMEME_CACHE_*` secrets and unset
    `RESUMEME_SESSION_CACHE_DIR`. Delete matching Actions caches and local persistent
