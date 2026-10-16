@@ -37,6 +37,7 @@ dependencies = [
     "jsonschema>=4.26.0,<4.27",
     "Pillow>=12.3.0,<12.4",
     "wordcloud>=1.9.6,<1.10",
+    "matplotlib>=3.11.2,<3.12",
     "pypdf>=6.19.0,<6.20",
     "opentelemetry-sdk>=1.45.1,<1.46",
     "opentelemetry-instrumentation-logging>=0.66b1,<0.67",
@@ -83,7 +84,7 @@ requires = ["poetry-core==2.5.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-testpaths = ["pkg/resumeme/tests"]
+testpaths = ["pkg/resumeme/tests", "tests"]
 pythonpath = ["."]
 
 # Share CPU-based worker selection between local runs and CI; use -n 0 when debugging a single process.
@@ -122,7 +123,7 @@ mypy_path = ["scripts/typing"]
 exclude = ["scripts/typing/"]
 python_version = "3.13"
 strict = true
-files = ["pkg", "scripts"]
+files = ["pkg", "scripts", "tests"]
 disallow_any_explicit = true
 disallow_any_unimported = true
 

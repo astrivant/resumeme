@@ -25,6 +25,7 @@ from resumeme.compiler.backends.latex.compilation import tex_image
 from resumeme.compiler.constants.escaping import PUNCTUATION
 from resumeme.config import Ownership, project_path
 from resumeme.exceptions import PublicationError
+from resumeme.github.convergence import markup
 from resumeme.linkedin.identity import release_destination
 from resumeme.visualization.branding import render_brew_badge
 
@@ -209,6 +210,7 @@ def render_readme(profile: Profile, config: Config, repository: str, pages: int)
         f"{' - '.join(links)}\n\n"
         f"[![First page of {name}'s résumé]({preview})]({pdf})\n\n"
         "*Preview of page 1. Click to open the complete PDF.*\n\n"
+        f"{markup(config.readme.convergence_plot, config.readme.output)}\n\n"
         "Built with [resumeme](https://github.com/astrivant/resumeme). "
         f"[Configuration]({targets['config']}) - [Automation]({targets['automation']}).\n"
     )

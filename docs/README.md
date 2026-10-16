@@ -2,27 +2,27 @@
 
 ## Contents
 
-- [Configuration and operation](#configuration-and-operation)
-  - [Contents](#contents)
-  - [Install](#install)
-  - [Configuration](#configuration)
-    - [First-page profile placement](#first-page-profile-placement)
-    - [Section visibility, order, and tiles](#section-visibility-order-and-tiles)
-    - [Header and skills](#header-and-skills)
-  - [Job filtering](#job-filtering)
-  - [Education filtering](#education-filtering)
-  - [GitHub contribution graph](#github-contribution-graph)
-  - [Job text and subheadings](#job-text-and-subheadings)
-  - [Environment variables](#environment-variables)
-  - [Local capture](#local-capture)
-  - [Rendering and PDF builds](#rendering-and-pdf-builds)
-    - [Document layout](#document-layout)
-    - [Project consolidation and links](#project-consolidation-and-links)
-    - [Templates and assets](#templates-and-assets)
-  - [Signed releases](#signed-releases)
-  - [Pipeline and ownership](#pipeline-and-ownership)
-    - [Document review](#document-review)
-  - [Capture limits and recovery](#capture-limits-and-recovery)
+<!-- toc:start -->
+- [Install](#install)
+- [Configuration](#configuration)
+  - [First-page profile placement](#first-page-profile-placement)
+  - [Section visibility, order, and tiles](#section-visibility-order-and-tiles)
+  - [Header and skills](#header-and-skills)
+- [Job filtering](#job-filtering)
+- [Education filtering](#education-filtering)
+- [GitHub contribution graph](#github-contribution-graph)
+- [Job text and subheadings](#job-text-and-subheadings)
+- [Environment variables](#environment-variables)
+- [Local capture](#local-capture)
+- [Rendering and PDF builds](#rendering-and-pdf-builds)
+  - [Document layout](#document-layout)
+  - [Project consolidation and links](#project-consolidation-and-links)
+  - [Templates and assets](#templates-and-assets)
+- [Signed releases](#signed-releases)
+- [Pipeline and ownership](#pipeline-and-ownership)
+  - [Document review](#document-review)
+- [Capture limits and recovery](#capture-limits-and-recovery)
+<!-- toc:end -->
 
 ## Install
 

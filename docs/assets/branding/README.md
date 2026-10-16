@@ -55,6 +55,15 @@ To also refresh the badge and managed README block, pass the PDF's UTC build dat
 poetry run python scripts/ci/publication/refresh-logo.py --seed "$(git rev-parse HEAD)" --brew-date 2026-10-07
 ```
 
+## Contents
+
+<!-- toc:start -->
+- [Generation prompts](#generation-prompts)
+  - [Initial concept](#initial-concept)
+  - [Clean mark](#clean-mark)
+  - [Coffee overlay](#coffee-overlay)
+<!-- toc:end -->
+
 ## Generation prompts
 
 Both source layers were edited from the initial generated coffee-stained mark.

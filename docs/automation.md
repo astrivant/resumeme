@@ -99,6 +99,8 @@ meaningful predicted time. `capture.sharding` can resize the matrix after a
 completed-run cooldown when predicted time/cost savings justify it. The
 [convergence study](../studies/capture-convergence/README.md) compares this policy
 with fixed limits, an outer PID supervisor, and online gradient descent.
+The [live README plot](capture-scheduling.md#live-convergence-plot) separately
+tracks real aggregate measurements on tags, using Matplotlib and fork-local output paths.
 Persistent bottlenecks can be refined from sections to independently selectable
 detail tabs, one additional section per run.
 

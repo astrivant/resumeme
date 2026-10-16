@@ -9,8 +9,6 @@ application trials have been performed, and the proposed command, database, and
 configuration fields below are not implemented.
 
 <!-- toc:start -->
-**Table of contents**
-
 - [Feasibility and scope](#feasibility-and-scope)
 - [Backend assessment](#backend-assessment)
 - [Application lifecycle](#application-lifecycle)

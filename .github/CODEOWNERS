@@ -2,3 +2,24 @@
 /.github/CODEOWNERS @emmeowzing
 /docs/awareness.md @emmeowzing
 /pkg/resumeme/awareness/models.py @emmeowzing
+
+# Capture evidence, figure generation and its publication contract.
+/.config/resumeme.config.ref.yaml @emmeowzing
+/.github/workflows/ci.yml @emmeowzing
+/.github/workflows/stage-tag-publish.yml @emmeowzing
+/README.md @emmeowzing
+/docs/assets/capture-convergence.* @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/docs/automation.md @emmeowzing
+/docs/capture-scheduling.md @emmeowzing
+/docs/data-handling.md @emmeowzing
+/pkg/resumeme/compiler/asts/resources/config.schema.json @emmeowzing
+/pkg/resumeme/config/ @emmeowzing
+/pkg/resumeme/github/convergence.py @emmeowzing
+/pkg/resumeme/github/readme.py @emmeowzing
+/pkg/resumeme/visualization/convergence.py @emmeowzing
+/poetry.lock @emmeowzing
+/pyproject.toml @emmeowzing
+/scripts/ci/publication/convergence.py @emmeowzing
+/scripts/documentation/ @emmeowzing
+/tests/convergence/ @emmeowzing

@@ -166,6 +166,7 @@ publishing:
     mode: auto
     output: README.md
     introduction: null
+    convergence_plot: docs/assets/capture-convergence.svg
   pages:
     enabled: false
     path: /

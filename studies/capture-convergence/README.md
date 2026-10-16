@@ -9,6 +9,7 @@ speedup. No LinkedIn account or live capture is used by this study.
 
 ## Contents
 
+<!-- toc:start -->
 - [Reproduce](#reproduce)
 - [Why not a PID controlling PID gains?](#why-not-a-pid-controlling-pid-gains)
 - [Scheduling rule and guarantees](#scheduling-rule-and-guarantees)
@@ -18,6 +19,7 @@ speedup. No LinkedIn account or live capture is used by this study.
 - [Automatic capacity and useful turnover](#automatic-capacity-and-useful-turnover)
 - [Executable mathematics](#executable-mathematics)
 - [Sources and next evidence](#sources-and-next-evidence)
+<!-- toc:end -->
 
 ## Reproduce
 

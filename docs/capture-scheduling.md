@@ -370,3 +370,67 @@ conservation, nonincreasing variance/makespan, and adaptive migration limits.
 Syntax validation cannot prove arbitrary mathematical claims. Review changes to
 definitions and derivations, and update executable examples and property tests
 when changing the objective or controller. See [development checks](development.md#document-checks).
+
+## Live convergence plot
+
+Tag CI records aggregate measurements only after complete capture validation.
+The existing signed-resume publication stage renders them with Matplotlib and
+commits the SVG, adjacent JSON evidence, and managed README HTML together on
+`main`. A failed capture contributes no point. A release or publication failure
+leaves the previous graph intact; publishing the graph requires the same branch
+write permission as publishing the resume.
+
+| Panel | Measurement | Interpretation |
+| --- | --- | --- |
+| PID prediction error | Sum of absolute observed-minus-predicted route durations divided by summed observed durations, in percent | Uses the frozen estimates supplied to workers, before PID updates or deadband filtering. Only routes with prior PID state qualify. Cold starts are gaps, not zero error. |
+| Worker imbalance | Population standard deviation divided by mean worker traversal duration, in percent | Includes idle workers; reflects placement, worker count, and indivisible routes as well as prediction quality. |
+| Slowest worker | Maximum summed traversal duration across workers, in seconds | Includes traversal retries; excludes login, startup, runner queueing, aggregation, and PDF generation. It is not pipeline wall time. |
+
+The caption shows calibrated-route coverage for the latest capture. History keeps
+up to 60 distinct tags, ordered by Actions run ID; a rerun replaces that tag's
+point. Each JSON observation records the repository, tag, source commit, run ID,
+attempt, worker and route counts, aggregate metrics, and an opaque configuration
+fingerprint. Inspect a run at `https://github.com/OWNER/REPO/actions/runs/RUN_ID`
+and its source at `https://github.com/OWNER/REPO/commit/SOURCE_SHA`.
+Profile text, route names, URLs, individual durations, PID state and credentials
+are excluded. Aggregate timings and counts are intentionally public when the
+repository is public. They describe changing real workloads, not a controlled
+benchmark or proof of controller stability.
+
+Configure the destination in the fork's existing YAML:
+
+```yaml
+publishing:
+  readme:
+    convergence_plot: docs/assets/capture-convergence.svg
+```
+
+Set `convergence_plot: null` to disable measurement publication and clear managed
+plot markup. Existing published files/history are retained. Changing repository,
+profile owner, capture settings or runner class starts a new series, so inherited
+upstream data never becomes a fork's measurements. Changing the destination starts
+at that path's history; move both the SVG and adjacent JSON to retain a series.
+The initial image says **Awaiting first tagged capture** until real measurements
+are published. A custom destination becomes available on its first published tag.
+
+Generated personal READMEs include the plot automatically, including nested
+`publishing.readme.output` destinations. For a custom README, opt in with exactly
+one ordered pair of HTML comments:
+
+```html
+<!-- resumeme:convergence:start -->
+<!-- resumeme:convergence:end -->
+```
+
+CI fills this region with an HTML `<img>` and evidence link, preserving other
+text. Links are relative to the Markdown file, so forks use their own artifacts.
+The script updates the root README and the configured personal README; it does
+not insert a region into an unmarked custom page.
+
+To reproduce a figure without LinkedIn access, load its saved evidence using
+`decode_history` and pass it to `render` in
+[`resumeme.visualization.convergence`](../pkg/resumeme/visualization/convergence.py).
+The publication script is
+[`scripts/ci/publication/convergence.py`](../scripts/ci/publication/convergence.py).
+CI reads the latest published history from main while holding the existing
+publication lock, rather than reading the older tagged source tree.

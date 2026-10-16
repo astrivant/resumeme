@@ -304,6 +304,25 @@ jobs:
           poetry run resumeme --config resumeme.config.yaml validate
       - name: Export complete capture for downstream stages
         run: poetry run python scripts/ci/linkedin/profile-artifact.py export
+      # Project only aggregate evidence; profile fields and per-route timings stay out of the public plot artifact.
+      - name: Collect tag convergence measurements
+        id: convergence
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+          CAPTURE_RUNNER: ${{ vars.RESUMEME_LINKEDIN_RUNNER || '["ubuntu-24.04"]' }}
+        run: |
+          poetry run python scripts/ci/publication/convergence.py enabled >>"$GITHUB_OUTPUT"
+          poetry run python scripts/ci/publication/convergence.py collect
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.convergence.outputs.enabled == 'true'
+        with:
+          name: capture-convergence
+          path: .cache/convergence/current.json
+          include-hidden-files: true
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 14
       # Publish feedback only after complete aggregation and validation; failed workers never train the next run.
       - name: Encrypt traversal timings for the next run
         id: timings

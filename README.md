@@ -38,31 +38,32 @@ version you want to share to get a signed release.
 
 ## Contents
 
-- [resumeme](#resumeme)
-  - [Why use this tool?](#why-use-this-tool)
-  - [Contents](#contents)
-  - [Quick start](#quick-start)
-    - [1. Install](#1-install)
-    - [2. Capture your profile](#2-capture-your-profile)
-    - [3. Publish](#3-publish)
-    - [Use with an AI agent](#use-with-an-ai-agent)
-  - [How it works](#how-it-works)
-  - [Update your résumé](#update-your-résumé)
-    - [Refresh your profile](#refresh-your-profile)
-    - [Refresh links and previews](#refresh-links-and-previews)
-    - [Preview the PDF locally](#preview-the-pdf-locally)
-  - [Customize your résumé](#customize-your-résumé)
-    - [Sections and projects](#sections-and-projects)
-    - [Job history](#job-history)
-    - [Education](#education)
-    - [Profile header and contact information](#profile-header-and-contact-information)
-    - [GitHub activity](#github-activity)
-    - [Skills](#skills)
-    - [Codex summaries](#codex-summaries)
-  - [Publishing](#publishing)
-    - [GitHub Pages](#github-pages)
-    - [Fork environment variables](#fork-environment-variables)
-  - [Documentation](#documentation)
+<!-- toc:start -->
+- [Why use this tool?](#why-use-this-tool)
+- [Quick start](#quick-start)
+  - [1. Install](#1-install)
+  - [2. Capture your profile](#2-capture-your-profile)
+  - [3. Publish](#3-publish)
+  - [Use with an AI agent](#use-with-an-ai-agent)
+- [How it works](#how-it-works)
+- [Collection convergence](#collection-convergence)
+- [Update your résumé](#update-your-résumé)
+  - [Refresh your profile](#refresh-your-profile)
+  - [Refresh links and previews](#refresh-links-and-previews)
+  - [Preview the PDF locally](#preview-the-pdf-locally)
+- [Customize your résumé](#customize-your-résumé)
+  - [Sections and projects](#sections-and-projects)
+  - [Job history](#job-history)
+  - [Education](#education)
+  - [Profile header and contact information](#profile-header-and-contact-information)
+  - [GitHub activity](#github-activity)
+  - [Skills](#skills)
+  - [Codex summaries](#codex-summaries)
+- [Publishing](#publishing)
+  - [GitHub Pages](#github-pages)
+  - [Fork environment variables](#fork-environment-variables)
+- [Documentation](#documentation)
+<!-- toc:end -->
 
 ## Quick start
 
@@ -208,6 +209,21 @@ the PDFs under `single-origin/`, alongside your generic resume. See
 company/job context overrides.
 
 See [configuration, architecture, and capture limits](docs/README.md) for the details.
+
+## Collection convergence
+
+Tag CI updates this Matplotlib plot from complete capture measurements, alongside
+the signed resume publication. Prediction error measures the PID estimates;
+worker imbalance also reflects route placement and indivisible work. Read
+[capture convergence](docs/capture-scheduling.md#live-convergence-plot) for the metrics
+and the configurable output destination used by forks. Set
+`publishing.readme.convergence_plot` to a repository-relative SVG path (default:
+`docs/assets/capture-convergence.svg`), or `null` to disable publication.
+
+<!-- resumeme:convergence:start -->
+<p><a href="docs/assets/capture-convergence.json"><img src="docs/assets/capture-convergence.svg" alt="Collection convergence across tagged captures: PID prediction error, worker imbalance and traversal time" width="1000"></a></p>
+<p>Measured on complete tagged captures; lower error means more accurate timing predictions. Cold starts have no prediction error point. Click the plot for its source and run evidence.</p>
+<!-- resumeme:convergence:end -->
 
 ## Update your résumé
 
