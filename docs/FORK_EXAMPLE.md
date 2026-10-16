@@ -10,4 +10,9 @@ My résumé, kept current from LinkedIn and published here as a PDF\. Open the f
 
 *Preview of page 1. Click to open the complete PDF.*
 
+<!-- resumeme:convergence:start -->
+<p><a href="assets/capture-convergence.json"><img src="assets/capture-convergence.svg" alt="Collection convergence across main captures: PID prediction error, worker imbalance and traversal time" width="1000"></a></p>
+<p>Measured on complete main captures; lower error means more accurate timing predictions. Cold starts have no prediction error point. Click the plot for its source and run evidence.</p>
+<!-- resumeme:convergence:end -->
+
 Built with [resumeme](https://github.com/astrivant/resumeme). [Configuration](../resumeme.config.yaml) - [Automation](automation.md).
