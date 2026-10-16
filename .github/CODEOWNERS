@@ -11,6 +11,8 @@
 /.github/workflows/stage-release-check.yml @emmeowzing
 /.github/workflows/stage-tag-publish.yml @emmeowzing
 /.pre-commit-config.yaml @emmeowzing
+/Dockerfile @emmeowzing
+/LICENSE @emmeowzing
 /README.md @emmeowzing
 /SKILL.md @emmeowzing
 /docs/README.md @emmeowzing
@@ -20,6 +22,7 @@
 /docs/codeowners.md @emmeowzing
 /docs/data-handling.md @emmeowzing
 /docs/development.md @emmeowzing
+/docs/licensing.md @emmeowzing
 /docs/linkedin-session-cache.md @emmeowzing
 /docs/skills.md @emmeowzing
 /pkg/resumeme/awareness/models.py @emmeowzing
@@ -41,6 +44,7 @@
 /scripts/ci/publication/publish.sh @emmeowzing
 /scripts/codeowners/ @emmeowzing
 /scripts/documentation/ @emmeowzing
+/scripts/licenses/GPL-3.0-only.txt @emmeowzing
 /scripts/release/check-delivery.sh @emmeowzing
 /scripts/release/check-published.sh @emmeowzing
 /scripts/release/commit-main.sh @emmeowzing

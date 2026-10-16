@@ -4,7 +4,7 @@ version = "0.5.0"
 description = "Turn your LinkedIn profile into a polished PDF resume, built and signed with GitHub Actions"
 authors = [{name = "Emma Doyle"}]
 readme = "README.md"
-license = "GPL-3.0-only"
+license = "BUSL-1.1"
 license-files = ["LICENSE"]
 requires-python = ">=3.13,<4.0"
 keywords = ["resume", "cv", "linkedin", "latex", "pdf", "github-actions", "automation", "cosign"]

@@ -63,6 +63,7 @@ version you want to share to get a signed release.
   - [GitHub Pages](#github-pages)
   - [Fork environment variables](#fork-environment-variables)
 - [Documentation](#documentation)
+- [License](#license)
 <!-- toc:end -->
 
 ## Quick start
@@ -540,3 +541,10 @@ own device label; resumeme cannot set or verify the label shown in the app.
 - [Development](docs/development.md): setup, parallel tests, tooling, and document checks.
 - [Security policy](.github/SECURITY.md) and [sensitive data handling](docs/data-handling.md): reporting, storage, recipients, retention, encryption limits, and fork responsibilities.
 - [Studies](studies/README.md): design assessments, including the proposed automated job application workflow.
+
+## License
+
+Resumeme is source-available under [Business Source License 1.1](LICENSE), with
+Astrivant LLC as licensor and no additional production-use grant. Each version
+converts to GPLv3 four years after its first public distribution under BSL.
+See [licensing and separately licensed components](docs/licensing.md).

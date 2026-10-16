@@ -70,5 +70,5 @@ FROM runtime AS production
 COPY --from=builder /opt/venv /opt/venv
 LABEL org.opencontainers.image.title="resumeme" \
     org.opencontainers.image.description="Build an illustrated LinkedIn resume from versioned profile inputs" \
-    org.opencontainers.image.licenses="GPL-3.0-only"
+    org.opencontainers.image.licenses="BUSL-1.1"
 USER 10001:10001
