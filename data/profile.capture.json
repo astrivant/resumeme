@@ -218,11 +218,11 @@
     "data/assets/feccb4aba52b0ef51dfcab1fb2d768a3c1f76454b699239bbe2a2312c4e83bb4.png": "feccb4aba52b0ef51dfcab1fb2d768a3c1f76454b699239bbe2a2312c4e83bb4",
     "data/assets/fed5d0d5f6fa2ad0269ec7e16816ce002477626a8ecbc07b0052a3ce0e9ba8d6.png": "fed5d0d5f6fa2ad0269ec7e16816ce002477626a8ecbc07b0052a3ce0e9ba8d6",
     "data/assets/feff4649268e6d53ba7599062999431ff32778f7ec2eda37ebd506febd9e851b.png": "feff4649268e6d53ba7599062999431ff32778f7ec2eda37ebd506febd9e851b",
-    "data/profile.json": "7cfe01305009cd85d686440a92cc38900210971c3f2b87a74853c8926eec9664"
+    "data/profile.json": "1dbe90f93d272767aae1cfb0f5be23b22df1293f0206f89b3be6defd0d17e45e"
   },
   "ref": "refs/heads/main",
   "repository": "astrivant/resumeme",
-  "run": 38876045331,
-  "source": "876a56af9b7e46f2b5d88a876d2969f102296cef",
+  "run": 38882366524,
+  "source": "848f37a47b7cc2b8012bbb49d0801c635dc77148",
   "version": 1
 }
