@@ -1,0 +1,4 @@
+# Review routing for the awareness explanation and its caption source.
+/.github/CODEOWNERS @emmeowzing
+/docs/awareness.md @emmeowzing
+/pkg/resumeme/awareness/models.py @emmeowzing

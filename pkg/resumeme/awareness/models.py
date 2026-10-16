@@ -37,7 +37,8 @@ FIGURE_DESCRIPTIONS = {
     "knowledge-map": (
         "Each bubble groups an engineering discipline and its skills; the connections show how ideas are organized and reused across "
         "areas of work. Larger, more central bubbles reflect greater recent recorded use. "
-        "The shaded distribution, ellipses, and center mark summarize that working emphasis; fading indicates peripheral focus, "
+        "The fitted Gaussian shows working emphasis dispersion: where recent recorded activity concentrates and how widely it spreads "
+        "across the displayed disciplines. Its ellipses and center mark summarize that spread; fading indicates peripheral focus, "
         "not forgotten skills. Together, they show how different parts of my engineering practice support one another."
     ),
     "decision-influences": (
