@@ -78,7 +78,7 @@ profile:
 
     experience:
       disable:
-        - company: astrivant
+        # - company: astrivant
         - company: Tiger Lily Plants LLC.
         - title: Founder
           company: PremiScale

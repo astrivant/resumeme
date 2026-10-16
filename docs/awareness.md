@@ -122,8 +122,10 @@ visible. Standalone collection plots retain their titles. Existing bundles must
 be regenerated to remove titles already embedded in their PNGs.
 
 The connection map shows up to twelve disciplines, sized and positioned by
-recent recorded applications. A weighted two-dimensional Gaussian is fitted to
-their layout; its covariance can rotate the ellipse, and opacity fades with
+recent recorded applications. The fitted Gaussian shows **working emphasis
+dispersion**: where that activity concentrates and how widely it spreads across
+the displayed disciplines. This weighted two-dimensional fit follows their
+layout; its covariance can rotate the ellipse, and opacity fades with
 Mahalanobis distance across twice the 1.75 standard-deviation reference distance,
 with a readable floor. Gray contours show 0.5, 1, 1.5, and 2 standard deviations;
 half steps are dashed and whole steps are solid. A gray, white-outlined plus marks
