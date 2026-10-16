@@ -36,6 +36,8 @@
 /docs/skills.md @emmeowzing
 /pkg/resumeme/tests/delivery/test_publication.py @emmeowzing
 /pkg/resumeme/tests/linkedin/test_refresh.py @emmeowzing
+/pkg/resumeme/tests/linkedin/test_resume_publish.py @emmeowzing
+/pkg/resumeme/tests/linkedin/test_skill_suggestions.py @emmeowzing
 /scripts/ci/linkedin/profile-artifact.py @emmeowzing
 /scripts/ci/pipeline/source.sh @emmeowzing
 /scripts/ci/publication/publish.sh @emmeowzing

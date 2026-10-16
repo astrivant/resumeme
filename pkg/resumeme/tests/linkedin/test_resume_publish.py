@@ -785,7 +785,11 @@ def test_upload_workflow_requires_verified_current_tag_and_explicit_settings() -
     assert workflow["permissions"] == {"contents": "read"}
 
     for stage in (caller, job):
-        assert stage["if"] == "github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')"
+        assert "github.event_name == 'push'" in stage["if"]
+        assert "startsWith(github.ref, 'refs/tags/')" in stage["if"]
+    assert "!cancelled()" in caller["if"]
+    assert "needs.source.result == 'success'" in caller["if"]
+    assert "needs.release-stage.result == 'success'" in caller["if"]
 
     assert job["concurrency"] == {"group": "resumeme-linkedin-resume-${{ github.repository }}", "cancel-in-progress": False}
     steps = job["steps"]
