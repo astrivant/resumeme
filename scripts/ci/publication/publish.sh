@@ -13,12 +13,16 @@ test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
 
 # Commit exactly the fresh inputs that passed verification alongside the PDF produced from them.
 if [[ "${REFRESH_PROFILE:-false}" == true ]]; then
-    poetry run python scripts/ci/linkedin/profile-artifact.py stage
+    poetry run python scripts/ci/linkedin/profile-artifact.py accept
 fi
 
 # Tree comparison below recognizes an identical publication from a previous attempt, including refreshed inputs.
 poetry run python scripts/ci/resume/restore-pdf.py
 readme_mode="$(poetry run python scripts/ci/publication/readme-artifact.py restore)"
+
+if [ "${REFRESH_PROFILE:-false}" = true ]; then
+    poetry run python scripts/ci/publication/convergence.py publish
+fi
 
 # A fresh coffee stain accompanies real resume changes; unchanged builds must not create logo-only bot commits.
 # Use the source revision so a retry reconstructs the exact tree of a successful earlier publication.
@@ -55,13 +59,8 @@ if git diff --cached --quiet; then
     exit 0
 fi
 
-# A personal token triggers push workflows; mark generated commits so their follow-up CI run does not publish again.
-# Avoid GitHub's skip-CI markers: users may tag this commit later and must still get a fresh capture and release.
-publication_message='docs: update resume and repository presentation'
-
-if [[ "${RESUMEME_PUBLISH_USES_TOKEN:-false}" == true ]]; then
-    publication_message+=$'\n\nResumeme-Publication: true'
-fi
+# Mark every generated publication for capture-loop prevention; tags still run their build and release checks.
+publication_message=$'docs: update resume and repository presentation\n\nResumeme-Publication: true'
 
 git commit -m "$publication_message"
 

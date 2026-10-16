@@ -72,7 +72,7 @@ layout and legacy-path migration table are in [configuration layout](configurati
 | `publishing.linkedin.resume.share_with_recruiters` | `null` | After upload, `true` enables recruiter resume-data sharing and `false` disables it; `null` preserves LinkedIn's current setting |
 | `publishing.readme.mode` | `auto` | [Personal README](automation.md#personal-readme) on forks; `project` preserves a custom README, `resume` generates everywhere |
 | `publishing.readme.introduction` | `null` | Optional plain-text introduction replacing the personal README boilerplate |
-| `automation.codex.skills.enabled` | `false` | Generate evidence-backed skill proposals after tag capture; live publication waits for the signed release; `false` skips generation and its API usage |
+| `automation.codex.skills.enabled` | `false` | Generate evidence-backed skill proposals from the accepted capture committed at the tag; live publication waits for the signed release; `false` skips generation and its API usage |
 | `automation.codex.skills.publish` | `false` | Opt in to adding missing skills to LinkedIn; existing skills and endorsements are always retained |
 | `automation.codex.skills.max_skills` | `20` | Maximum suggested skill names per tagged release |
 | `automation.codex.skills.context` | Empty | Skill selection preferences; [generation and publishing instructions](skills.md) |
@@ -842,7 +842,8 @@ writing it to the workspace or passing its contents as a command argument.
 See [Cosign key import](https://docs.sigstore.dev/cosign/key_management/import-keypair/)
 and [`gh secret set`](https://cli.github.com/manual/gh_secret_set) for the upstream contracts.
 
-The tag pipeline captures LinkedIn headlessly and builds a new PDF. Its release
+The tag pipeline verifies the accepted main capture receipt and builds a new PDF
+from that committed profile and media. Tags never collect LinkedIn data. Its release
 stage downloads that run's `resume-pdf` artifact and adds provenance,
 then signs it with pinned Cosign 3.1.3, creates a SHA-256 manifest, signs that manifest, and verifies both signatures
 before uploading the signed artifacts. Monthly and ordinary builds upload unsigned

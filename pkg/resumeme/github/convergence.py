@@ -32,9 +32,9 @@ def markup(destination: str | None, readme: str) -> str:
         image = quote(posixpath.relpath(destination, directory), safe="/")
         evidence = quote(posixpath.relpath(str(Path(destination).with_suffix(".json")), directory), safe="/")
         body = (
-            f'<p><a href="{evidence}"><img src="{image}" alt="Collection convergence across tagged captures: '
+            f'<p><a href="{evidence}"><img src="{image}" alt="Collection convergence across main captures: '
             'PID prediction error, worker imbalance and traversal time" width="1000"></a></p>\n'
-            "<p>Measured on complete tagged captures; lower error means more accurate timing predictions. "
+            "<p>Measured on complete main captures; lower error means more accurate timing predictions. "
             "Cold starts have no prediction error point. Click the plot for its source and run evidence.</p>\n"
         )
     return f"{_START}\n{body}{_END}"

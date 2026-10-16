@@ -12,7 +12,7 @@
 formatting and the copy-paste routine of maintaining a second résumé. `resumeme` ☕ turns your profile into a polished, illustrated PDF you'll *actually want to send* to a hiring manager offline.
 
 Build and release your résumé like software: fork the project, set your username,
-capture your profile, and keep `main` current with monthly refreshes. Tag the
+capture your profile, and keep `main` current on source pushes and monthly refreshes. Tag the
 version you want to share to get a signed release.
 
 **[View the résumé (PDF)](resume.pdf)** - [Preview a fork's README](docs/FORK_EXAMPLE.md) - [Fork this project][fork-resumeme]
@@ -121,13 +121,13 @@ poetry run resumeme render
 
 `render` runs the same Jinja-to-LaTeX formatter locally and writes reviewable
 source to `tex/resume.tex`. Commit the updated profile and assets, then push;
-the main-branch workflow rebuilds the PDF from that snapshot.
+main captures current profile data and publishes the verified snapshot and PDF.
 
 Sign in to LinkedIn in the browser window and leave it open. Capture waits for you
 to finish signing in, then saves your profile and images locally. **A username
 change alone does not fetch a profile on an ordinary branch push:** those builds
-use the snapshot you push. Tags, monthly runs, and requested manual refreshes
-capture again with the LinkedIn login secrets.
+use the snapshot you push. Main source pushes, monthly runs, and requested manual main refreshes
+capture with the LinkedIn login secrets. Tags reuse accepted main data.
 
 To use Chrome, set `capture.browser: chrome` in the config; `firefox` is the default.
 Install the selected browser first. See [browser setup](docs/README.md#local-capture).
@@ -192,13 +192,13 @@ The portable inputs are `data/profile.json` and `data/assets/`.
 
 Jinja translates those inputs and your YAML configuration into `tex/resume.tex`.
 The digest-pinned `drpsychick/texlive-pdflatex` image compiles the PDF. CI installs
-from the Poetry lockfile. Ordinary branch pushes rebuild committed inputs; monthly
-runs and tag pushes capture LinkedIn first. After validation, main-branch publication
+from the Poetry lockfile. Feature branches rebuild committed inputs; main source pushes, monthly
+runs and requested manual main refreshes capture LinkedIn first. After validation, main-branch publication
 commits the PDF and any refreshed inputs together. User-created tags sign the fresh
 PDF built in that run, adding a release link and key fingerprint to its footer,
 and publish a release. The same verified PDF, signature bundles, and fingerprint
-are committed to `main` with the matching profile capture, then Pages deploys that
-commit. If `main` has advanced or a newer release exists, the older tag cannot
+are committed to `main`, then Pages deploys that
+commit. Tags verify the accepted capture receipt and never start collection. If `main` has advanced or a newer release exists, the older tag cannot
 replace the current PDF.
 Pull requests validate without publishing or signing in.
 
@@ -212,8 +212,8 @@ See [configuration, architecture, and capture limits](docs/README.md) for the de
 
 ## Collection convergence
 
-Tag CI updates this Matplotlib plot from complete capture measurements, alongside
-the signed resume publication. Prediction error measures the PID estimates;
+Main CI updates this Matplotlib plot from complete capture measurements, alongside
+the accepted snapshot and working PDF. Prediction error measures the PID estimates;
 worker imbalance also reflects route placement and indivisible work. Read
 [capture convergence](docs/capture-scheduling.md#live-convergence-plot) for the metrics
 and the configurable output destination used by forks. Set
@@ -221,8 +221,8 @@ and the configurable output destination used by forks. Set
 `docs/assets/capture-convergence.svg`), or `null` to disable publication.
 
 <!-- resumeme:convergence:start -->
-<p><a href="docs/assets/capture-convergence.json"><img src="docs/assets/capture-convergence.svg" alt="Collection convergence across tagged captures: PID prediction error, worker imbalance and traversal time" width="1000"></a></p>
-<p>Measured on complete tagged captures; lower error means more accurate timing predictions. Cold starts have no prediction error point. Click the plot for its source and run evidence.</p>
+<p><a href="docs/assets/capture-convergence.json"><img src="docs/assets/capture-convergence.svg" alt="Collection convergence across main captures: PID prediction error, worker imbalance and traversal time" width="1000"></a></p>
+<p>Measured on complete main captures; lower error means more accurate timing predictions. Cold starts have no prediction error point. Click the plot for its source and run evidence.</p>
 <!-- resumeme:convergence:end -->
 
 ## Update your résumé

@@ -373,10 +373,10 @@ when changing the objective or controller. See [development checks](development.
 
 ## Live convergence plot
 
-Tag CI records aggregate measurements only after complete capture validation.
-The existing signed-resume publication stage renders them with Matplotlib and
+Main CI records aggregate measurements only after complete capture validation.
+The existing verified main publication stage renders them with Matplotlib and
 commits the SVG, adjacent JSON evidence, and managed README HTML together on
-`main`. A failed capture contributes no point. A release or publication failure
+`main`. A failed capture contributes no point. A build or publication failure
 leaves the previous graph intact; publishing the graph requires the same branch
 write permission as publishing the resume.
 
@@ -387,8 +387,8 @@ write permission as publishing the resume.
 | Slowest worker | Maximum summed traversal duration across workers, in seconds | Includes traversal retries; excludes login, startup, runner queueing, aggregation, and PDF generation. It is not pipeline wall time. |
 
 The caption shows calibrated-route coverage for the latest capture. History keeps
-up to 60 distinct tags, ordered by Actions run ID; a rerun replaces that tag's
-point. Each JSON observation records the repository, tag, source commit, run ID,
+up to 60 distinct runs, ordered by Actions run ID; a retry replaces that run's
+point. Each JSON observation records the repository, source commit, run ID,
 attempt, worker and route counts, aggregate metrics, and an opaque configuration
 fingerprint. Inspect a run at `https://github.com/OWNER/REPO/actions/runs/RUN_ID`
 and its source at `https://github.com/OWNER/REPO/commit/SOURCE_SHA`.
@@ -410,8 +410,8 @@ plot markup. Existing published files/history are retained. Changing repository,
 profile owner, capture settings or runner class starts a new series, so inherited
 upstream data never becomes a fork's measurements. Changing the destination starts
 at that path's history; move both the SVG and adjacent JSON to retain a series.
-The initial image says **Awaiting first tagged capture** until real measurements
-are published. A custom destination becomes available on its first published tag.
+The initial image says **Awaiting first main capture** until real measurements
+are published. A custom destination becomes available on its first published main capture.
 
 Generated personal READMEs include the plot automatically, including nested
 `publishing.readme.output` destinations. For a custom README, opt in with exactly
@@ -433,4 +433,4 @@ To reproduce a figure without LinkedIn access, load its saved evidence using
 The publication script is
 [`scripts/ci/publication/convergence.py`](../scripts/ci/publication/convergence.py).
 CI reads the latest published history from main while holding the existing
-publication lock, rather than reading the older tagged source tree.
+publication lock, so retries retain previously accepted points. Tags consume the published plot without adding a point.

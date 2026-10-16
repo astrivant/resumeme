@@ -34,7 +34,7 @@ def sample() -> Observation:
     Returns:
         Observation: Synthetic warm capture for publication tests.
     """
-    return Observation("example/resume", "a" * 64, "v1", "b" * 40, 100, 1, 2, 2, 2, 10.0, 20.0, 60.0)
+    return Observation("example/resume", "a" * 64, "b" * 40, 100, 1, 2, 2, 2, 10.0, 20.0, 60.0)
 
 
 def test_measurement_uses_frozen_predictions_and_does_not_disclose_routes() -> None:
@@ -57,7 +57,7 @@ def test_measurement_uses_frozen_predictions_and_does_not_disclose_routes() -> N
         )
         for index, assigned in assign_routes(plan).items()
     ]
-    metadata = {"repository": "example/resume", "scope": "a" * 64, "tag": "v1", "source": "b" * 40}
+    metadata = {"repository": "example/resume", "scope": "a" * 64, "source": "b" * 40}
     cold = measure(plan, shards, **metadata, run=100, attempt=1)
     assert cold.error_percent is None
     assert cold.calibrated == 0
@@ -76,7 +76,7 @@ def test_measurement_uses_frozen_predictions_and_does_not_disclose_routes() -> N
 
 def test_history_reruns_scopes_and_bounds() -> None:
     """
-    Isolate forks and configuration changes while preserving one observation per immutable tag.
+    Isolate forks and configuration changes while preserving one observation per main run.
 
     Returns:
         None: Reruns replace points, stale attempts are ignored, and histories remain bounded.
@@ -89,10 +89,10 @@ def test_history_reruns_scopes_and_bounds() -> None:
     assert merge_history([original], fork) == [fork]
     changed = evolve(original, scope="c" * 64)
     assert merge_history([original], changed) == [changed]
-    with pytest.raises(ValueError, match="moved tag"):
+    with pytest.raises(ValueError, match="changed run source"):
         merge_history([original], evolve(original, source="d" * 40))
-    history = [evolve(original, tag=f"v{index}", run=index) for index in range(1, 61)]
-    result = merge_history(history, evolve(original, tag="v61", run=61))
+    history = [evolve(original, run=index) for index in range(1, 61)]
+    result = merge_history(history, evolve(original, run=61))
     assert len(result) == 60
     assert result[0].run == 2
     assert decode_history(serialize(result)) == result
@@ -173,13 +173,13 @@ def test_matplotlib_is_reproducible_and_shows_empty_and_cold_states(tmp_path: Pa
     monkeypatch.setattr(Figure, "savefig", save)
     path = tmp_path / "plot.svg"
     render([], path)
-    assert "Awaiting first tagged capture" in path.read_text()
+    assert "Awaiting first main capture" in path.read_text()
     cold = evolve(sample(), calibrated=0, error_percent=None)
     render([cold], path)
     assert "Cold start: no prior PID estimates" in path.read_text()
-    render([cold, evolve(sample(), run=101, tag="v2")], path)
+    render([cold, evolve(sample(), run=101)], path)
     first = path.read_bytes()
-    render([cold, evolve(sample(), run=101, tag="v2")], path)
+    render([cold, evolve(sample(), run=101)], path)
     assert path.read_bytes() == first
     assert limits[0] >= 10.0
     assert limits[1] >= sample().dispersion_percent
@@ -211,7 +211,7 @@ def test_publication_reads_main_history_and_checks_artifact_binding(tmp_path: Pa
     Exercise latest-main history and explicit staging with a real local Git origin.
 
     Args:
-        tmp_path (Path): Isolated origin and tag-like checkout.
+        tmp_path (Path): Isolated origin and main source checkout.
         monkeypatch (MonkeyPatch): Supplies synthetic Actions metadata.
 
     Returns:
@@ -235,7 +235,7 @@ def test_publication_reads_main_history_and_checks_artifact_binding(tmp_path: Pa
     git(tmp_path, "clone", str(upstream), str(checkout))
     git(checkout, "checkout", "--detach", source)
     monkeypatch.chdir(checkout)
-    current = evolve(previous, tag="v2", run=101)
+    current = evolve(previous, run=101)
     artifact = checkout / ".cache/convergence/current.json"
     artifact.parent.mkdir(parents=True)
     artifact.write_bytes(serialize([current]))
@@ -256,22 +256,24 @@ def test_publication_reads_main_history_and_checks_artifact_binding(tmp_path: Pa
         publish()
 
 
-def test_ci_owns_complete_capture_artifact_and_tag_publication() -> None:
+def test_ci_owns_complete_capture_artifact_and_main_publication() -> None:
     """
-    Keep the actual producer and consumer in the existing verified tag pipeline.
+    Keep the actual producer and consumer in the existing verified main pipeline.
 
     Returns:
-        None: Collection follows validation, publication follows release, and no raw capture artifact is uploaded for plotting.
+        None: Collection follows validation, publication follows verification, and no raw capture artifact is uploaded for plotting.
     """
     root = Path(__file__).resolve().parents[2]
     workflow = (root / ".github/workflows/ci.yml").read_text()
-    stage = (root / ".github/workflows/stage-tag-publish.yml").read_text()
+    stage = (root / ".github/workflows/stage-deploy.yml").read_text()
     assert workflow.index("Check the accepted profile") < workflow.index("convergence.py collect")
     assert "path: .cache/convergence/current.json" in workflow
     assert "needs: [source, release-stage]" in workflow
-    assert stage.index("convergence.py publish") < stage.index("scripts/release/commit-main.sh")
+    publisher = (root / "scripts/ci/publication/publish.sh").read_text()
+    assert publisher.index("convergence.py publish") < publisher.index("git commit")
+    assert "needs: [source, verified]" in workflow
     assert "group: resumeme-pdf-main" in stage
-    assert "if: steps.convergence.outputs.enabled == 'true'" in stage
+    assert "if: inputs.refresh && steps.convergence.outputs.enabled == 'true'" in stage
 
 
 def test_disabled_publication_needs_no_capture_and_personal_page_uses_its_destination(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:

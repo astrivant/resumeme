@@ -331,11 +331,11 @@ scope. The parent commit's successful CI check does not apply to the new generat
 commit. After changing the workflow, push it and start a new run; rerunning an
 older run uses its original workflow and secret mapping.
 
-Publication-token commits include a `Resumeme-Publication: true` trailer. Their
-pushes run normal CI and Scorecard; only repeated PDF publication is skipped.
+Generated publication commits include a `Resumeme-Publication: true` trailer. Their
+pushes run normal CI and Scorecard; recapture and repeated PDF publication are skipped.
 The originating run deploys Pages using the accepted commit. Monthly and manual
-refreshes can still publish new PDFs; tagging a generated commit still captures
-LinkedIn and creates a release. Publication never forces a push or relaxes branch
+refreshes can still publish new PDFs; tagging an accepted generated commit builds from its
+committed capture and creates a release. Publication never forces a push or relaxes branch
 protection.
 
 ## OpenSSF Scorecard

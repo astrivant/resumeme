@@ -32,12 +32,11 @@ _LIMIT = 60
 @frozen
 class Observation:
     """
-    Retain one tag's aggregate evidence, without profile content or per-route measurements.
+    Retain one main run's aggregate evidence, without profile content or per-route measurements.
 
     Attributes:
         repository (str): Publishing owner/repository, which isolates inherited fork history.
         scope (str): Opaque fingerprint of capture owner, settings and runner class.
-        tag (str): Tag whose capture produced this observation.
         source (str): Immutable source revision used by that pipeline.
         run (int): GitHub Actions run identifier.
         attempt (int): Attempt number, used to reject older retries.
@@ -51,7 +50,6 @@ class Observation:
 
     repository: str
     scope: str
-    tag: str
     source: str
     run: int
     attempt: int
@@ -64,7 +62,7 @@ class Observation:
 
 
 def measure(
-    plan: CapturePlan, shards: list[CaptureShard], *, repository: str, scope: str, tag: str, source: str, run: int, attempt: int
+    plan: CapturePlan, shards: list[CaptureShard], *, repository: str, scope: str, source: str, run: int, attempt: int
 ) -> Observation:
     """
     Compare measurements with the immutable estimates actually supplied to workers.
@@ -74,8 +72,7 @@ def measure(
         shards (list[CaptureShard]): Complete workers, including idle workers.
         repository (str): Current GitHub repository.
         scope (str): Fingerprint of the capture configuration.
-        tag (str): Current release tag.
-        source (str): Tagged source commit.
+        source (str): Captured main source commit.
         run (int): Actions run identifier.
         attempt (int): Actions attempt number.
 
@@ -97,7 +94,6 @@ def measure(
     sample = Observation(
         repository,
         scope,
-        tag,
         source,
         run,
         attempt,
@@ -152,8 +148,8 @@ def decode_history(data: bytes) -> list[Observation]:
     except cattrs.BaseValidationError as error:
         raise ValueError("Invalid convergence observations.") from error
 
-    if len(samples) > _LIMIT or len({(item.repository, item.scope, item.tag) for item in samples}) != len(samples):
-        raise ValueError("Convergence history must contain at most 60 distinct tags.")
+    if len(samples) > _LIMIT or len({(item.repository, item.scope, item.run) for item in samples}) != len(samples):
+        raise ValueError("Convergence history must contain at most 60 distinct runs.")
 
     for item in samples:
         numbers = [item.dispersion_percent, item.peak_seconds]
@@ -163,9 +159,6 @@ def decode_history(data: bytes) -> list[Observation]:
             not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.-]+", item.repository)
             or not re.fullmatch(r"[a-f0-9]{64}", item.scope)
             or not re.fullmatch(r"[a-f0-9]{40}", item.source)
-            or not item.tag
-            or len(item.tag) > 128
-            or any(ord(char) < 32 for char in item.tag)
             or min(item.run, item.attempt, item.workers) < 1
             or not 0 <= item.calibrated <= item.routes
             or (item.error_percent is None) != (item.calibrated == 0)
@@ -177,7 +170,7 @@ def decode_history(data: bytes) -> list[Observation]:
 
 def merge_history(history: list[Observation], current: Observation) -> list[Observation]:
     """
-    Keep compatible fork-local history and make tag reruns replace their original point.
+    Keep compatible fork-local history and make run retries replace their original point.
 
     Args:
         history (list[Observation]): Previously published observations.
@@ -187,16 +180,16 @@ def merge_history(history: list[Observation], current: Observation) -> list[Obse
         list[Observation]: At most sixty observations ordered by Actions run identifier.
 
     Raises:
-        ValueError: A published tag was moved to a different source revision.
+        ValueError: A run changes its immutable source revision.
     """
     compatible = [item for item in history if (item.repository, item.scope) == (current.repository, current.scope)]
-    previous = next((item for item in compatible if item.tag == current.tag), None)
+    previous = next((item for item in compatible if item.run == current.run), None)
     if previous is not None:
         if previous.source != current.source:
-            raise ValueError("Cannot replace convergence evidence for a moved tag.")
+            raise ValueError("Cannot replace convergence evidence for a changed run source.")
         if (previous.run, previous.attempt) > (current.run, current.attempt):
             return compatible
-    result = sorted([item for item in compatible if item.tag != current.tag] + [current], key=lambda item: item.run)[-_LIMIT:]
+    result = sorted([item for item in compatible if item.run != current.run] + [current], key=lambda item: item.run)[-_LIMIT:]
     decode_history(serialize(result))
     return result
 
@@ -218,7 +211,7 @@ def render(samples: list[Observation], output: Path) -> None:
     ):
         figure, axes = plt.subplots(1, 3, figsize=(13, 4.5))
         figure.suptitle("Collection convergence", fontsize=18, color="#38654B", y=0.98)
-        figure.text(0.5, 0.89, "Are timing predictions and worker balance improving across tagged captures?", ha="center", fontsize=11)
+        figure.text(0.5, 0.89, "Are timing predictions and worker balance improving across main captures?", ha="center", fontsize=11)
         metrics: tuple[tuple[list[float | None], str, str, str], ...] = (
             ([item.error_percent for item in samples], "PID prediction error", "Weighted absolute error (%)", "#C35C24"),
             ([item.dispersion_percent for item in samples], "Worker imbalance", "Traversal dispersion (%)", "#38654B"),
@@ -227,7 +220,7 @@ def render(samples: list[Observation], output: Path) -> None:
         for axis, (values, title, label, color) in zip(axes, metrics, strict=True):
             axis.set_title(title, fontsize=12)
             axis.set_ylabel(label)
-            axis.set_xlabel("Tagged capture (oldest to newest)")
+            axis.set_xlabel("Main capture (oldest to newest)")
             axis.spines[["top", "right"]].set_visible(False)
             axis.grid(axis="y", alpha=0.2)
             if samples:
@@ -235,7 +228,7 @@ def render(samples: list[Observation], output: Path) -> None:
                 axis.xaxis.get_major_locator().set_params(integer=True)
                 axis.set_xlim(0.5, len(samples) + 0.5)
             else:
-                axis.text(0.5, 0.5, "Awaiting first tagged capture", ha="center", transform=axis.transAxes)
+                axis.text(0.5, 0.5, "Awaiting first main capture", ha="center", transform=axis.transAxes)
                 axis.set_xticks([])
             # Set the lower bound after plotting so Matplotlib still fits the upper bound to actual data.
             axis.set_ylim(bottom=0)

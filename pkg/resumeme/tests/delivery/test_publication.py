@@ -270,6 +270,7 @@ def test_publication_resumes_only_for_the_identical_generated_commit(
         "scripts/ci/resume/restore-pdf.py",
         "scripts/ci/publication/readme-artifact.py",
         "scripts/ci/linkedin/profile-artifact.py",
+        "scripts/ci/publication/convergence.py",
         "scripts/ci/publication/refresh-logo.py",
         "scripts/tooling/retry.sh",
         "docs/assets/branding/linkedin-base.png",
@@ -279,10 +280,10 @@ def test_publication_resumes_only_for_the_identical_generated_commit(
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(project / relative, destination)
 
-    configuration = "linkedin:\n  username: example-person\n"
+    configuration = "linkedin:\n  username: example-person\npublishing:\n  readme:\n    convergence_plot: null\n"
 
     if readme_output and not fork:
-        configuration += f"readme:\n  mode: resume\n  output: {readme_output}\n"
+        configuration += f"    mode: resume\n    output: {readme_output}\n"
 
     (root / "resumeme.config.yaml").write_text(configuration, encoding="utf-8")
     (root / "README.md").write_text(
@@ -339,13 +340,15 @@ def test_publication_resumes_only_for_the_identical_generated_commit(
         RESUMEME_REPOSITORY_FORK=str(fork).lower(),
         RESUMEME_PUBLISH_USES_TOKEN=str(publication_token).lower(),
         GITHUB_REPOSITORY="example/my-cv",
+        GITHUB_RUN_ID="100",
+        GITHUB_RUN_ATTEMPT="1",
         RETRY_BACKOFF_SECONDS="0",
     )
     subprocess.run(["bash", "scripts/ci/publication/publish.sh"], cwd=root, env=environment, capture_output=True, text=True, check=True)
     published = _git(remote, "rev-parse", "main")
     assert published != source
     message = _git(remote, "log", "-1", "--format=%B", "main")
-    assert ("Resumeme-Publication: true" in message) is publication_token
+    assert "Resumeme-Publication: true" in message
     assert "[skip ci]" not in message
     assert output.read_text() == f"published-sha={published}\n"
     files = _git(remote, "diff-tree", "--no-commit-id", "--name-only", "-r", published).splitlines()
@@ -358,7 +361,9 @@ def test_publication_resumes_only_for_the_identical_generated_commit(
     if readme_output and not fork:
         expected_files.extend([readme_output, "docs/assets/resume-preview.png"])
 
-    assert files == sorted(["data/assets/logo.png", "data/profile.json", *expected_files] if refresh else expected_files)
+    assert files == sorted(
+        ["data/assets/logo.png", "data/profile.json", "data/profile.capture.json", *expected_files] if refresh else expected_files
+    )
 
     if readme_output:
         assert (root / readme_output).read_text() == "# Fresh owner - Résumé\n"
@@ -405,6 +410,7 @@ def test_publication_resumes_only_for_the_identical_generated_commit(
         # Rebuilding the just-published revision with identical inputs must not make a logo-only commit.
         _git(root, "checkout", "--detach", published)
         environment["SOURCE_SHA"] = published
+        environment["REFRESH_PROFILE"] = "false"
         output.write_text("", encoding="utf-8")
         subprocess.run(["bash", "scripts/ci/publication/publish.sh"], cwd=root, env=environment, capture_output=True, text=True, check=True)
         assert _git(remote, "rev-parse", "main") == published
@@ -743,7 +749,7 @@ def test_tag_pipeline_publishes_verified_release_files_and_refreshes_pages() -> 
     Keep tag publication downstream of signing and connect its accepted main SHA to Pages.
 
     Returns:
-        None: The commit stage consumes the signed release and profile artifacts; Pages deploys only its output SHA.
+        None: The commit stage consumes only the signed release; Pages deploys only its output SHA.
     """
     workflows = REPOSITORY_ROOT / ".github/workflows"
     pipeline = yaml.safe_load((workflows / "ci.yml").read_text())
@@ -755,16 +761,13 @@ def test_tag_pipeline_publishes_verified_release_files_and_refreshes_pages() -> 
     job = publish["jobs"]["publish"]
     steps = job["steps"]
     signed = next(step for step in steps if step.get("with", {}).get("name") == "signed-resume")
-    captured = next(step for step in steps if step.get("with", {}).get("name") == "resumeme-profile")
+    assert not any(step.get("with", {}).get("name") == "resumeme-profile" for step in steps)
     verify = next(index for index, step in enumerate(steps) if step.get("run") == "bash scripts/release/verify.sh")
-    stage_profile = next(index for index, step in enumerate(steps) if "profile-artifact.py stage" in step.get("run", ""))
     stage_readme = next(index for index, step in enumerate(steps) if "readme-artifact.py stage" in step.get("run", ""))
     restore_readme = next(index for index, step in enumerate(steps) if "readme-artifact.py restore" in step.get("run", ""))
     commit = next(index for index, step in enumerate(steps) if step.get("run") == "bash scripts/release/commit-main.sh")
     assert signed["with"]["path"] == ".cache/publication/"
-    assert captured["with"]["path"] == ".cache/refresh/"
-    restore_profile = next(index for index, step in enumerate(steps) if "profile-artifact.py restore" in step.get("run", ""))
-    assert steps.index(signed) < verify < restore_profile < stage_profile < stage_readme < restore_readme < commit
+    assert steps.index(signed) < verify < stage_readme < restore_readme < commit
     assert job["concurrency"]["group"] == "resumeme-pdf-main"
 
 

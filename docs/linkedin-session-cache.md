@@ -134,7 +134,7 @@ The capture matrix allows six browser workers to run concurrently. A self-hosted
 pool needs up to six available runner slots to run the full fan-out at once; a
 single slot serializes the workers and removes the parallel speedup. Restrict
 runner access to trusted repository workflows. Pull-request and ordinary branch
-checks in this pipeline remain hosted; capture runs only for tags, monthly runs,
+checks in this pipeline remain hosted; capture runs only for main source pushes, monthly runs,
 or an explicit refresh on `main`. Do not grant untrusted pull-request workflows
 access to this machine.
 

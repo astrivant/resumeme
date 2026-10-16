@@ -38,7 +38,7 @@ z
    </g>
    <g id="matplotlib.axis_1">
     <g id="text_1">
-     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="178.181172" y="268.356094" transform="rotate(-0 178.181172 268.356094)">Tagged capture (oldest to newest)</text>
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="178.181172" y="268.356094" transform="rotate(-0 178.181172 268.356094)">Main capture (oldest to newest)</text>
     </g>
    </g>
    <g id="matplotlib.axis_2">
@@ -152,7 +152,7 @@ L 308.4 256.757656
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_9">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="178.181172" y="180.160937" transform="rotate(-0 178.181172 180.160937)">Awaiting first tagged capture</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="178.181172" y="180.160937" transform="rotate(-0 178.181172 180.160937)">Awaiting first main capture</text>
    </g>
    <g id="text_10">
     <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="178.181172" y="97.564219" transform="rotate(-0 178.181172 97.564219)">PID prediction error</text>
@@ -169,7 +169,7 @@ z
    </g>
    <g id="matplotlib.axis_3">
     <g id="text_11">
-     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="486.581172" y="268.356094" transform="rotate(-0 486.581172 268.356094)">Tagged capture (oldest to newest)</text>
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="486.581172" y="268.356094" transform="rotate(-0 486.581172 268.356094)">Main capture (oldest to newest)</text>
     </g>
    </g>
    <g id="matplotlib.axis_4">
@@ -278,7 +278,7 @@ L 616.8 256.757656
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_19">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="486.581172" y="180.160937" transform="rotate(-0 486.581172 180.160937)">Awaiting first tagged capture</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="486.581172" y="180.160937" transform="rotate(-0 486.581172 180.160937)">Awaiting first main capture</text>
    </g>
    <g id="text_20">
     <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="486.581172" y="97.564219" transform="rotate(-0 486.581172 97.564219)">Worker imbalance</text>
@@ -295,7 +295,7 @@ z
    </g>
    <g id="matplotlib.axis_5">
     <g id="text_21">
-     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="794.981172" y="268.356094" transform="rotate(-0 794.981172 268.356094)">Tagged capture (oldest to newest)</text>
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="794.981172" y="268.356094" transform="rotate(-0 794.981172 268.356094)">Main capture (oldest to newest)</text>
     </g>
    </g>
    <g id="matplotlib.axis_6">
@@ -404,7 +404,7 @@ L 925.2 256.757656
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_29">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="794.981172" y="180.160937" transform="rotate(-0 794.981172 180.160937)">Awaiting first tagged capture</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="794.981172" y="180.160937" transform="rotate(-0 794.981172 180.160937)">Awaiting first main capture</text>
    </g>
    <g id="text_30">
     <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="794.981172" y="97.564219" transform="rotate(-0 794.981172 97.564219)">Slowest worker</text>
@@ -414,7 +414,7 @@ L 925.2 256.757656
    <text style="font-size: 18px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #38654b" x="468" y="20.157188" transform="rotate(-0 468 20.157188)">Collection convergence</text>
   </g>
   <g id="text_32">
-   <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle" x="468" y="35.64" transform="rotate(-0 468 35.64)">Are timing predictions and worker balance improving across tagged captures?</text>
+   <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle" x="468" y="35.64" transform="rotate(-0 468 35.64)">Are timing predictions and worker balance improving across main captures?</text>
   </g>
   <g id="text_33">
    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #555555" x="468" y="311.04" transform="rotate(-0 468 311.04)">Only complete captures. Cold starts have no error point. Traversal excludes startup, login and queueing.</text>
