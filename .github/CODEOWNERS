@@ -46,3 +46,5 @@
 /scripts/release/commit-main.sh @emmeowzing
 /scripts/release/publish.sh @emmeowzing
 /tests/__init__.py @emmeowzing
+
+/tests/pipeline/ @emmeowzing
