@@ -274,3 +274,12 @@ and private backup locations are in the linked guides.
   Add only missing skills. Never remove, rename, replace, reorder, or alter
   existing skills or endorsements; a full list stops publication. Capture again
   to bring additions into the snapshot/PDF. See [publication and retries](docs/skills.md#preservation-and-retry-behavior).
+
+## Maintain review ownership
+
+When adding or moving owned files, update CODEOWNERS and run the
+[ownership compiler](docs/codeowners.md) in the same change. Review the normalized
+map, stage it, and pass the hooks. Commit hooks organize the complete map even for
+path-only changes; push and CI checks validate the committed map and tree together.
+Keep wildcard precedence and section boundaries intact. New directory scopes require
+explicit review because they also assign ownership of future files.

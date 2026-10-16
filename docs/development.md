@@ -303,8 +303,10 @@ editing the file locally does not change GitHub's live protection.
 than its pusher, dismissal of stale approvals, resolved review conversations, and
 the `CI verification` check on an up-to-date branch. Squash and rebase merges keep
 history linear; merge commits, force pushes, and branch deletion are disabled.
-Administrators retain bypass. There is no code-owner review requirement because
-this repository has no `CODEOWNERS` file.
+Administrators retain bypass. The existing CODEOWNERS map supplies review routing; code-owner approval is not
+a separate required gate. Follow the [ownership compiler workflow](codeowners.md)
+when adding, moving or removing owned paths. Commit hooks normalize the complete
+map, and push/CI checks require that normalization in the committed revision.
 
 Direct PDF publication to protected `main` requires **`RESUME_PUBLISH_TOKEN`**:
 a dedicated token limited to this repository with contents write permission,

@@ -17,6 +17,7 @@ esac
 
 # Use the same hooks developers run locally so CI does not maintain a second lint or schema-validation policy.
 if [[ "$mode" != tests ]]; then
+    poetry run pre-commit run codeowners-tree-push --hook-stage pre-push --all-files
     poetry run pre-commit run --all-files --show-diff-on-failure
 fi
 
