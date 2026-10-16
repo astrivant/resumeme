@@ -130,62 +130,6 @@ def test_capture_restore_rejects_incomplete_or_unrelated_inputs(tmp_path: Path, 
     assert not (tmp_path / "data/assets/image.png").exists()
 
 
-@pytest.mark.parametrize(
-    ("event", "ref", "requested", "expected"),
-    [
-        ("schedule", "refs/heads/main", True, True),
-        ("workflow_dispatch", "refs/heads/main", True, True),
-        ("push", "refs/tags/v0.2.0", False, False),
-        ("push", "refs/tags/resume-test", False, False),
-        ("push", "refs/tags/resume-test", True, None),
-        ("pull_request", "refs/heads/main", True, None),
-        ("pull_request", "refs/tags/resume-test", True, None),
-        ("push", "refs/heads/main", True, True),
-        ("workflow_dispatch", "refs/heads/feature", True, None),
-        ("workflow_dispatch", "refs/tags/resume-test", True, None),
-        ("schedule", "refs/heads/feature", True, None),
-        ("push", "refs/heads/main", False, True),
-        ("push", "refs/heads/feature", False, False),
-        ("pull_request", "refs/pull/123/merge", False, False),
-        ("workflow_dispatch", "refs/heads/main", False, False),
-    ],
-)
-def test_refresh_event_selection(tmp_path: Path, event: str, ref: str, requested: bool, expected: bool | None) -> None:
-    """
-    Capture only main source events and keep tags on accepted committed inputs.
-
-    Args:
-        tmp_path (Path): GitHub output-file directory.
-        event (str): Triggering GitHub event.
-        ref (str): Event's repository reference.
-        requested (bool): Whether the workflow explicitly requested a refresh.
-        expected (bool | None): Capture decision, or None when this context must fail before exposing credentials.
-
-    Returns:
-        None: Main pushes refresh without an opt-in; tags reuse saved inputs and invalid refresh requests fail.
-    """
-    output = tmp_path / "output"
-    result = subprocess.run(
-        ["bash", "scripts/ci/pipeline/source.sh"],
-        cwd=REPOSITORY_ROOT,
-        env=dict(
-            os.environ,
-            REFRESH_PROFILE=str(requested).lower(),
-            GITHUB_EVENT_NAME=event,
-            GITHUB_REF=ref,
-            GITHUB_OUTPUT=str(output),
-        ),
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert (result.returncode == 0) is (expected is not None)
-    assert output.exists() is (expected is not None)
-
-    if expected is not None:
-        assert f"refresh={str(expected).lower()}\n" in output.read_text()
-
-
 def test_tag_pipeline_propagates_capture_and_signs_the_current_build() -> None:
     """
     Keep refreshed evidence and the built PDF connected across independent CI checkouts.

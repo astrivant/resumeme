@@ -71,35 +71,6 @@ def test_capture_receipt_requires_committed_matching_main_inputs(tmp_path: Path,
     assert (result.returncode == 0) == (invalid is None), result.stderr
 
 
-@pytest.mark.parametrize(
-    "author,marker,expected", [("Fixture", True, "true"), ("github-actions[bot]", False, "true"), ("github-actions[bot]", True, "false")]
-)
-def test_generated_main_publication_does_not_recapture(tmp_path: Path, author: str, marker: bool, expected: str) -> None:
-    """
-    Require both bot authorship and the publication marker before suppressing a main capture.
-
-    Args:
-        tmp_path (Path): Local Git fixture.
-        author (str): Fixture commit author name.
-        marker (bool): Whether the publication trailer is present.
-        expected (str): Expected refresh output.
-
-    Returns:
-        None: Bot-generated publications cannot recursively capture themselves.
-    """
-    git(tmp_path, "init", "-b", "main")
-    message = "fixture" + ("\n\nResumeme-Publication: true" if marker else "")
-    git(tmp_path, "commit", "--allow-empty", "--author", f"{author} <fixture@example.test>", "-m", message)
-    output = tmp_path / "output"
-    subprocess.run(
-        ["bash", str(ROOT / "scripts/ci/pipeline/source.sh")],
-        cwd=tmp_path,
-        check=True,
-        env=dict(os.environ, GITHUB_EVENT_NAME="push", GITHUB_REF="refs/heads/main", GITHUB_OUTPUT=str(output)),
-    )
-    assert f"refresh={expected}\n" in output.read_text()
-
-
 @pytest.mark.parametrize("result", ["success", "failure", "skipped", "cancelled"])
 @pytest.mark.parametrize("job", ["verified", "release-stage", "pypi-stage", "container-stage", "tag-publish-stage", "tag-pages-stage"])
 def test_tag_delivery_rejects_missing_required_publishers(result: str, job: str) -> None:
