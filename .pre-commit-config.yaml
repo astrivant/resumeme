@@ -1,3 +1,4 @@
+default_install_hook_types: [pre-commit, pre-push]
 default_language_version:
   python: python3.13
   node: 26.10.0
@@ -11,6 +12,29 @@ repos:
         files: '^(pkg/resumeme/linkedin/scripts/.*\.js|scripts/validation/math/.*\.mjs)$'
   - repo: local
     hooks:
+      - id: codeowners-tree
+        name: Normalize CODEOWNERS directory tree
+        entry: bash scripts/tooling/project-python.sh -m scripts.codeowners.cli --write
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit, manual]
+      - id: codeowners-tree-push
+        name: Check committed CODEOWNERS directory tree
+        entry: bash scripts/tooling/project-python.sh -m scripts.codeowners.cli --check --revision HEAD
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+      - id: codeowners
+        name: CODEOWNERS syntax and paths
+        entry: env REPOSITORY_PATH=. CHECKS=files,duppatterns,syntax EXPERIMENTAL_CHECKS= CHECK_FAILURE_LEVEL=warning codeowners-validator
+        language: golang
+        language_version: 1.27.2
+        additional_dependencies:
+          - github.com/mszostok/codeowners-validator@7f3f5e28c6d7b8dfae5731e54ce2272ca384592f # v0.7.4
+        pass_filenames: false
+        always_run: true
       - id: documentation-contents
         name: README table of contents
         entry: bash scripts/tooling/project-python.sh scripts/documentation/contents.py --check
