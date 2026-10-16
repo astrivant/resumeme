@@ -68,10 +68,11 @@ profile:
       include:
         - name: polyad
         - name: hypothesis-helm
-        - name: composer
+        # - name: composer
         - name: resumeme
-        - name: orchidarium
-        - name: pass-operator
+        # - name: orchidarium
+        # - name: pass-operator
+        - name: identity
       exclude:
         - affiliation: HqO
         - name: gitlabci-lint-pre-commit-hook
