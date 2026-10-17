@@ -1,0 +1,293 @@
+{
+  "measurement": {
+    "base": "5591f6ef662ad21c25867f775da275c363353a53",
+    "merge_base": "5591f6ef662ad21c25867f775da275c363353a53",
+    "head": "8f7db7287fbb9987808cc84e6986deb2de0eaf07",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 0,
+        "deleted": 1
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 17,
+        "deleted": 18
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/codeowners/__init__.py",
+        "after": "scripts/codeowners/__init__.py",
+        "added": 0,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/codeowners/cli.py",
+        "after": "scripts/codeowners/cli.py",
+        "added": 0,
+        "deleted": 137
+      },
+      {
+        "before": "scripts/codeowners/compiler.py",
+        "after": "scripts/codeowners/compiler.py",
+        "added": 0,
+        "deleted": 242
+      },
+      {
+        "before": "tests/codeowners/test_compiler.py",
+        "after": "tests/codeowners/test_compiler.py",
+        "added": 2,
+        "deleted": 2
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 2,
+        "deleted": 384
+      },
+      {
+        "language": "TOML",
+        "added": 18,
+        "deleted": 20
+      },
+      {
+        "language": "Markdown",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "language": "YAML",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "language": "Unknown",
+        "added": 0,
+        "deleted": 1
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "scripts/codeowners/compiler.py",
+        "after": "scripts/codeowners/compiler.py",
+        "added": 0,
+        "deleted": 242
+      },
+      "description": "+0 added / -242 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/codeowners/cli.py",
+        "after": "scripts/codeowners/cli.py",
+        "added": 0,
+        "deleted": 137
+      },
+      "description": "+0 added / -137 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 17,
+        "deleted": 18
+      },
+      "description": "+17 added / -18 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 6,
+        "deleted": 6
+      },
+      "description": "+6 added / -6 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/codeowners/test_compiler.py",
+        "after": "tests/codeowners/test_compiler.py",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 2
+      },
+      "description": "+1 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/codeowners/__init__.py",
+        "after": "scripts/codeowners/__init__.py",
+        "added": 0,
+        "deleted": 3
+      },
+      "description": "+0 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 0,
+        "deleted": 1
+      },
+      "description": "+0 added / -1 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "scripts/codeowners/compiler.py",
+        "scripts/codeowners/cli.py",
+        "poetry.lock",
+        "docs/codeowners.md",
+        ".pre-commit-config.yaml",
+        "tests/codeowners/test_compiler.py",
+        "pyproject.toml",
+        "scripts/codeowners/__init__.py",
+        ".github/CODEOWNERS"
+      ],
+      "sha256": "59db0c069d513b6f186c3249ecb39e672676ce210a8c40e1f9fac541144bea08"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "scripts/codeowners/compiler.py",
+        "paths": [
+          "scripts/codeowners/compiler.py"
+        ],
+        "added": 0,
+        "deleted": 242,
+        "binary": 0
+      },
+      {
+        "label": "scripts/codeowners/cli.py",
+        "paths": [
+          "scripts/codeowners/cli.py"
+        ],
+        "added": 0,
+        "deleted": 137,
+        "binary": 0
+      },
+      {
+        "label": "poetry.lock",
+        "paths": [
+          "poetry.lock"
+        ],
+        "added": 17,
+        "deleted": 18,
+        "binary": 0
+      },
+      {
+        "label": "docs/codeowners.md",
+        "paths": [
+          "docs/codeowners.md"
+        ],
+        "added": 6,
+        "deleted": 6,
+        "binary": 0
+      },
+      {
+        "label": ".pre-commit-config.yaml",
+        "paths": [
+          ".pre-commit-config.yaml"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "tests/codeowners/test_compiler.py",
+        "paths": [
+          "tests/codeowners/test_compiler.py"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "pyproject.toml",
+        "paths": [
+          "pyproject.toml"
+        ],
+        "added": 1,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "scripts/codeowners/__init__.py",
+        "paths": [
+          "scripts/codeowners/__init__.py"
+        ],
+        "added": 0,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": ".github/CODEOWNERS",
+        "paths": [
+          ".github/CODEOWNERS"
+        ],
+        "added": 0,
+        "deleted": 1,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}

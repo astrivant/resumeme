@@ -1,0 +1,93 @@
+{
+  "measurement": {
+    "base": "5591f6ef662ad21c25867f775da275c363353a53",
+    "merge_base": "5591f6ef662ad21c25867f775da275c363353a53",
+    "head": "8f7db7287fbb9987808cc84e6986deb2de0eaf07",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 0,
+        "deleted": 1
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 17,
+        "deleted": 18
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/codeowners/__init__.py",
+        "after": "scripts/codeowners/__init__.py",
+        "added": 0,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/codeowners/cli.py",
+        "after": "scripts/codeowners/cli.py",
+        "added": 0,
+        "deleted": 137
+      },
+      {
+        "before": "scripts/codeowners/compiler.py",
+        "after": "scripts/codeowners/compiler.py",
+        "added": 0,
+        "deleted": 242
+      },
+      {
+        "before": "tests/codeowners/test_compiler.py",
+        "after": "tests/codeowners/test_compiler.py",
+        "added": 2,
+        "deleted": 2
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 2,
+        "deleted": 384
+      },
+      {
+        "language": "TOML",
+        "added": 18,
+        "deleted": 20
+      },
+      {
+        "language": "Markdown",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "language": "YAML",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "language": "Unknown",
+        "added": 0,
+        "deleted": 1
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
