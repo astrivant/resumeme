@@ -1993,6 +1993,22 @@ files = [
 attrs = ">=19.2.0"
 
 [[package]]
+name = "ownerloom"
+version = "0.0.1"
+description = "Compile readable CODEOWNERS policies without changing ownership precedence"
+optional = false
+python-versions = "!=3.14.1,<4,>=3.12"
+groups = ["dev"]
+markers = "python_full_version != \"3.14.1\""
+files = [
+    {file = "ownerloom-0.0.1-py3-none-any.whl", hash = "sha256:b41a0d077983980ebed23cf757e310b8bf12857811611925577491f1a03efd07"},
+    {file = "ownerloom-0.0.1.tar.gz", hash = "sha256:5fbe68bf11f07cb76c79cba1c62499ed84f4830b5a2312150c223452e7f7ad09"},
+]
+
+[package.dependencies]
+networkx = ">=3.7,<4"
+
+[[package]]
 name = "packaging"
 version = "26.3"
 description = "Core utilities for Python packages"
@@ -2835,23 +2851,6 @@ files = [
 referencing = "*"
 
 [[package]]
-name = "types-networkx"
-version = "3.6.1.20261006"
-description = "Typing stubs for networkx"
-optional = false
-python-versions = ">=3.10"
-groups = ["dev"]
-markers = "python_full_version != \"3.14.1\""
-files = [
-    {file = "types_networkx-3.6.1.20261006-py3-none-any.whl", hash = "sha256:8e2fedb83bb906c0d37a6ae020da3adc4abbd6bd999d8dd3d3266216bd6fae07"},
-    {file = "types_networkx-3.6.1.20261006.tar.gz", hash = "sha256:6c27cc7b49c8b49c4ac7ca2460299a5b43c4dad221e558eb4a9b59c78f19709d"},
-]
-
-[package.extras]
-all = ["numpy (>=1.21)"]
-numpy = ["numpy (>=1.21)"]
-
-[[package]]
 name = "types-pyyaml"
 version = "6.0.12.20260906"
 description = "Typing stubs for PyYAML"
@@ -3151,4 +3150,4 @@ h11 = ">=0.16.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "0939cc91438ae2c6f09515a2066fcbefb98ffbda2f13b573aacc26d5ae44fdff"
+content-hash = "414e769e01edaa3480f817bc6f4df7cc50261b44ab19317cd61cc4d806cfccb0"

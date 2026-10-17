@@ -14,14 +14,14 @@ repos:
     hooks:
       - id: codeowners-tree
         name: Normalize CODEOWNERS directory tree
-        entry: bash scripts/tooling/project-python.sh -m scripts.codeowners.cli --write
+        entry: bash scripts/tooling/project-python.sh -m ownerloom --write
         language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit, manual]
       - id: codeowners-tree-push
         name: Check committed CODEOWNERS directory tree
-        entry: bash scripts/tooling/project-python.sh -m scripts.codeowners.cli --check --revision HEAD
+        entry: bash scripts/tooling/project-python.sh -m ownerloom --check --revision HEAD
         language: system
         pass_filenames: false
         always_run: true

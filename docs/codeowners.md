@@ -1,13 +1,13 @@
 # Keep CODEOWNERS aligned with the repository
 
-Add review ownership and normalize it in the same change. The repository-local
-compiler groups literal paths by directory and removes redundant rules while
-preserving ownership precedence. It uses the project development environment;
-there is no external service or runtime package dependency.
+Add review ownership and normalize it in the same change.
+[Ownerloom](https://github.com/astrivant/ownerloom) groups literal paths by directory
+and removes redundant rules while preserving ownership precedence. It is pinned
+in the development environment and runs locally without a remote service.
 
 ```bash
 poetry run pre-commit install
-poetry run python -m scripts.codeowners.cli --write
+poetry run python -m ownerloom --write
 poetry run pre-commit run --all-files
 poetry run pre-commit run codeowners-tree-push --hook-stage pre-push --all-files
 ```
@@ -48,7 +48,7 @@ or owner eligibility check. It neither changes owners nor grants permissions.
 ## Consolidate a complete subtree
 
 ```bash
-poetry run python -m scripts.codeowners.cli --write --consolidate
+poetry run python -m ownerloom --write --consolidate
 ```
 
 This explicit option combines two or more same-owner scopes when they cover every

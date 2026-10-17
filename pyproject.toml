@@ -78,8 +78,7 @@ types-PyYAML = ">=6.0.12.20260906,<6.1"
 types-jsonschema = ">=4.26.0.20261006,<4.27"
 shellcheck-py = ">=0.11.0.1,<0.12"
 shfmt-py = ">=4.2.0,<4.3"
-networkx = {version = ">=3.7,<3.8", python = ">=3.13,!=3.14.1,<4.0"}
-types-networkx = {version = "3.6.1.20261006", python = ">=3.13,!=3.14.1,<4.0"}
+ownerloom = {version = "0.0.1", python = ">=3.13,!=3.14.1,<4.0"}
 
 [build-system]
 requires = ["poetry-core==2.5.0"]

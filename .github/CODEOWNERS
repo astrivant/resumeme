@@ -42,7 +42,6 @@
 /scripts/ci/pipeline/source.sh @emmeowzing
 /scripts/ci/publication/convergence.py @emmeowzing
 /scripts/ci/publication/publish.sh @emmeowzing
-/scripts/codeowners/ @emmeowzing
 /scripts/documentation/ @emmeowzing
 /scripts/licenses/GPL-3.0-only.txt @emmeowzing
 /scripts/release/check-delivery.sh @emmeowzing
